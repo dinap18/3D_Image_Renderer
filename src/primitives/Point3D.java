@@ -13,17 +13,6 @@ public class Point3D {
         Coordinate _y;
         Coordinate _z;
 
-    public void set_x(Coordinate _x) {
-        this._x = _x;
-    }
-
-    public void set_y(Coordinate _y) {
-        this._y = _y;
-    }
-
-    public void set_z(Coordinate _z) {
-        this._z = _z;
-    }
 
     public final static Point3D ZERO = new Point3D(0.0,0.0,0.0);
         /**
@@ -32,14 +21,22 @@ public class Point3D {
          * @param _y y coordinate
          * @param _z z coordinate
          */
-        public Point3D(Coordinate _x, Coordinate _y, Coordinate _z) {
+        public Point3D(Coordinate _x, Coordinate _y, Coordinate _z)
+        {
+
             this._x = _x;
             this._y = _y;
             this._z = _z;
+
         }
 
-        public Point3D(double _x, double _y, double _z) {
-            this(new Coordinate(_x),new Coordinate(_y),new Coordinate(_z));
+        public Point3D(double _x, double _y, double _z)
+        {
+
+
+            this._x=new Coordinate(_x) ;
+            this._y=new Coordinate(_y);
+            this._z=new Coordinate(_z);
         }
 
     /**

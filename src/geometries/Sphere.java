@@ -43,6 +43,10 @@ public class Sphere extends RadialGeometry
         return _center;
     }
 
+  /**
+     * ToString function
+     * @return string with the center 
+     */
     @Override
     public String toString() {
         return super.toString()+

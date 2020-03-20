@@ -25,7 +25,7 @@ public class Tube extends RadialGeometry
 
  /**
      * getNormal function
-     * @param point3D
+     * @param p-point3D
      * @return vector  
      */
     @Override

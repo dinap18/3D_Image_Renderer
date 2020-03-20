@@ -91,8 +91,8 @@ public class Vector
 
     /**
      * subtract function
-     * @param vector
-     * @return vector
+     * @param v-Vector
+     * @return vector- subtracts one vector from the other and returns the result
      */
     public Vector subtract(Vector v)
     {
@@ -102,8 +102,8 @@ public class Vector
 
     /**
      * add function
-     * @param vector
-     * @return vector
+     * @param v-Vector
+     * @return vector- adds to vectors together and returns the result
      */
     public Vector add(Vector v)
     {
@@ -112,8 +112,8 @@ public class Vector
 
     /**
      * scale function
-     * @param double
-     * @return vector
+     * @param d-double
+     * @return vector- returns a vector multiplied by a scalar
      */
     public Vector scale(double d)
     {
@@ -122,8 +122,8 @@ public class Vector
 
     /**
      * dot product function
-     * @param vector
-     * @return double
+     * @param v-Vector
+     * @return double-returns the dot product of two vectors
      */
     public double dotProduct(Vector v)
     {
@@ -136,8 +136,8 @@ public class Vector
 
     /**
      * cross product function
-     * @param vector
-     * @return vector
+     * @param v-Vector
+     * @return vector-returns the cross product of two vectors
      */
     public Vector crossProduct(Vector v)
     {
@@ -154,7 +154,7 @@ public class Vector
 
     /**
      * vector length squared function
-     * @return double
+     * @return double-length of vector squared
      */
     public double lengthSquared()
     {
@@ -163,7 +163,7 @@ public class Vector
 
     /**
      * vector length function
-     * @return double
+     * @return double-length of vector
      */
     public double length()
     {
@@ -177,7 +177,7 @@ public class Vector
 
     /**
      * normalize vector function
-     * @return vector
+     * @return vector-normalized vector
      */
     public Vector normalize()
     {
@@ -190,7 +190,7 @@ public class Vector
     
     /**
      * normalized vector function
-     * @return vector
+     * @return vector-new normalized vector
      */
     public Vector normalized()
     {

@@ -14,7 +14,7 @@ public class Ray
     Vector _dir;
        /**
          *Constructor of Ray with point3D and vector in parameter 
-         * @param point3D and vector
+         * @param p0-Point3D ,dir-Vector
          */
     public Ray(Point3D p0, Vector dir)
     {
@@ -26,8 +26,8 @@ public class Ray
         }
     }
        /**
-         *Constructor of Ray with ray in parameter 
-         * @param ray
+         *Copy constructor of Ray
+         * @param r-Ray
          */
     public Ray(Ray r)
     {
@@ -46,7 +46,7 @@ public class Ray
         return _p0;
     }
   /**
-         *Get vector function
+         *Get direction vector function
        */
     public Vector get_dir() {
         return _dir;

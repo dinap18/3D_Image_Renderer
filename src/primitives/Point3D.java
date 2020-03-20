@@ -1,7 +1,7 @@
 package primitives;
 import static java.lang.Math.*;
 /**
- *  Point#d basic point with coordinates in X axis, Y axis and Z axis
+ *  Point3d basic point with coordinates in X axis, Y axis and Z axis
  */
 public class Point3D {
 
@@ -55,7 +55,7 @@ public class Point3D {
 
     /**
          *Get functions
-         * @return new Coordinate based on _x
+         * @return new Coordinate based on _x , _y, or _z
          */
         public Coordinate get_x() {
             return new Coordinate(_x);
@@ -70,9 +70,9 @@ public class Point3D {
         }
 
         /**
-         * TODO
+         *
          * @param o
-         * @return true if they are equals 
+         * @return true if the points are equal
          */
         @Override
         public boolean equals(Object o) {
@@ -85,7 +85,8 @@ public class Point3D {
         }
 
          /**
-         * String function
+         * ToString function
+          * @return the point3D as a string
          */
         
         @Override
@@ -99,7 +100,7 @@ public class Point3D {
         
          /**
          *Subtract function
-          * @param point3D
+          * @param p
          * @return Vector
          */
         public Vector subtract(Point3D p) {
@@ -112,8 +113,8 @@ public class Point3D {
         
             /**
          *Add function
-          * @param vector
-         * @return point3D
+          * @param v-vector
+         * @return point3D- adds two vectors and returns the resulting Point3D
          */
         public Point3D add(Vector v)
         {
@@ -125,8 +126,8 @@ public class Point3D {
         }
             /**
          *DistanceSquared function
-         * @param point3D
-         * @return double
+         * @param p-point3D
+         * @return double - returns the distance between two points squared
          */
         public double distanceSquared(Point3D p)
         {
@@ -137,8 +138,8 @@ public class Point3D {
         
            /**
          *Distance function
-         * @param point3D
-         * @return double
+         * @param p-point3D
+         * @return double- returns the distance between two Point3Ds
          */
         public double distance(Point3D p)
         {

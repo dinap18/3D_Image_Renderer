@@ -27,9 +27,9 @@ public class Vector
 
     /**
      * Vector Constructor
-     * @param x
-     * @param y
-     * @param z
+     * @param x-double
+     * @param y-double
+     * @param z-double
      */
     public Vector(double x,double y,double z)
     {
@@ -43,9 +43,9 @@ public class Vector
 
     /**
      * Vector constructor
-     * @param x
-     * @param y
-     * @param z
+     * @param x-coordinate
+     * @param y-coordinate
+     * @param z-coordinate
      */
     public Vector(Coordinate x,Coordinate y,Coordinate z)
     {
@@ -58,7 +58,7 @@ public class Vector
 
     /**
      * copy constructor
-     * @param v
+     * @param v-Vector
      */
     public Vector(Vector v)
     {

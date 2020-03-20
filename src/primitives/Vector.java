@@ -1,9 +1,15 @@
+
 package primitives;
 
 import java.util.Objects;
-
+   /**
+         *Class Vector
+   */
 public class Vector
 {
+    /**
+         *Fields (point3D)
+   */
     Point3D _head;
 
     /**
@@ -71,7 +77,7 @@ public class Vector
     /**
      * equals
      * @param o
-     * @return
+     * @return true if they are equals
      */
     @Override
     public boolean equals(Object o) {
@@ -84,9 +90,9 @@ public class Vector
     }
 
     /**
-     * subtract
-     * @param v
-     * @return
+     * subtract function
+     * @param vector
+     * @return vector
      */
     public Vector subtract(Vector v)
     {
@@ -95,9 +101,9 @@ public class Vector
     }
 
     /**
-     * add
-     * @param v
-     * @return
+     * add function
+     * @param vector
+     * @return vector
      */
     public Vector add(Vector v)
     {
@@ -105,9 +111,9 @@ public class Vector
     }
 
     /**
-     * scale
-     * @param d
-     * @return
+     * scale function
+     * @param double
+     * @return vector
      */
     public Vector scale(double d)
     {
@@ -115,9 +121,9 @@ public class Vector
     }
 
     /**
-     * dot product
-     * @param v
-     * @return
+     * dot product function
+     * @param vector
+     * @return double
      */
     public double dotProduct(Vector v)
     {
@@ -129,9 +135,9 @@ public class Vector
     }
 
     /**
-     * cross product
-     * @param v
-     * @return
+     * cross product function
+     * @param vector
+     * @return vector
      */
     public Vector crossProduct(Vector v)
     {
@@ -147,8 +153,8 @@ public class Vector
     }
 
     /**
-     * vector length squared
-     * @return
+     * vector length squared function
+     * @return double
      */
     public double lengthSquared()
     {
@@ -156,8 +162,8 @@ public class Vector
     }
 
     /**
-     * vector length
-     * @return
+     * vector length function
+     * @return double
      */
     public double length()
     {
@@ -170,8 +176,8 @@ public class Vector
     }
 
     /**
-     * normalize vector
-     * @return
+     * normalize vector function
+     * @return vector
      */
     public Vector normalize()
     {
@@ -181,6 +187,11 @@ public class Vector
         this._head._z=new Coordinate(this.get_head()._z.get()/l);
         return this;
     }
+    
+    /**
+     * normalized vector function
+     * @return vector
+     */
     public Vector normalized()
     {
         return new Vector(this.normalize());

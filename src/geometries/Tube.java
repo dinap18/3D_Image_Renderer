@@ -23,7 +23,11 @@ public class Tube extends RadialGeometry
         this._axisRay = _axisRay;
     }
 
-
+ /**
+     * getNormal function
+     * @param point3D
+     * @return vector  
+     */
     @Override
     public Vector getNormal(Point3D p) {
         return null;

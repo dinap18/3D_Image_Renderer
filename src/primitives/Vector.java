@@ -165,11 +165,11 @@ public class Vector
      */
     public double length()
     {
-        double lgth = Math.pow(_head.get_x().get(),2) +
-                Math.pow(_head.get_y().get(),2) +
-                Math.pow(_head.get_z().get(), 2);
-        lgth = Math.sqrt(lgth);
-        return lgth;
+        double lgth = _head.get_x().get()*_head.get_x().get() +
+                _head.get_y().get() * _head.get_y().get()+
+                _head.get_z().get()*_head.get_z().get();
+        return Math.sqrt(lgth);
+
     }
 
     /**

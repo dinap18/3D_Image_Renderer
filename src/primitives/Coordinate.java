@@ -52,9 +52,7 @@ public final class Coordinate {
         return isZero(_coord - ((Coordinate)obj)._coord);
     }
     
-    /**
-     * ToString Function
-     */
+   
     
     @Override
     public String toString() {

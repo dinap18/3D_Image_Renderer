@@ -51,7 +51,11 @@ public final class Coordinate {
         if (!(obj instanceof Coordinate)) return false;
         return isZero(_coord - ((Coordinate)obj)._coord);
     }
-
+    
+    /**
+     * ToString Function
+     */
+    
     @Override
     public String toString() {
         return "" + _coord;

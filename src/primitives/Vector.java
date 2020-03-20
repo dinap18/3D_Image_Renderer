@@ -77,7 +77,7 @@ public class Vector
     /**
      * equals
      * @param o
-     * @return true if they are equals
+     * @return true if the vectors are equal
      */
     @Override
     public boolean equals(Object o) {

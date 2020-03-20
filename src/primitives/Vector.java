@@ -76,7 +76,7 @@ public class Vector
 
     /**
      * equals
-     * @param o
+     * @param o-vector
      * @return true if the vectors are equal
      */
     @Override
@@ -96,7 +96,7 @@ public class Vector
      */
     public Vector subtract(Vector v)
     {
-      return this._head.subtract(v._head);
+      return new Vector(this._head.subtract(v._head));
 
     }
 
@@ -113,7 +113,7 @@ public class Vector
     /**
      * scale function
      * @param d-double
-     * @return vector- returns a vector multiplied by a scalar
+     * @return vector- returns a vector multiplied by a scalar=a*v=(a*v1,a*v2,a*v3)
      */
     public Vector scale(double d)
     {
@@ -123,21 +123,21 @@ public class Vector
     /**
      * dot product function
      * @param v-Vector
-     * @return double-returns the dot product of two vectors
+     * @return double-returns the dot product of two vectors=𝑢 ∙ 𝑣 = 𝑢1 ∙ 𝑣1 + 𝑢2 ∙ 𝑣2 + 𝑢3 ∙ 𝑣3
      */
     public double dotProduct(Vector v)
     {
-        double dp;
-        dp = (this._head.get_x().get()*(v._head.get_x().get()))
+
+        return (this._head.get_x().get()*(v._head.get_x().get()))
                 + (this._head.get_y().get()*(v._head.get_y().get()))
                 + (this._head.get_z().get()*(v._head.get_z().get()));
-        return dp;
+
     }
 
     /**
      * cross product function
      * @param v-Vector
-     * @return vector-returns the cross product of two vectors
+     * @return vector-returns the cross product of two vectors=u*v=(𝑢2 ∙ 𝑣3 − 𝑢3 ∙ 𝑣2,𝑢3 ∙ 𝑣1 − 𝑢1 ∙ 𝑣3,𝑢1 ∙ 𝑣2 − 𝑢2 ∙ 𝑣1)
      */
     public Vector crossProduct(Vector v)
     {
@@ -147,9 +147,7 @@ public class Vector
         Coordinate x1 = new Coordinate(x);
         Coordinate y1 = new Coordinate(y);
         Coordinate z1 = new Coordinate(z);
-        Point3D p3D = new Point3D(x1,y1,z1);
-        Vector cp = new Vector(p3D);
-        return cp;
+        return new Vector( new Point3D(x1,y1,z1));
     }
 
     /**
@@ -167,8 +165,7 @@ public class Vector
      */
     public double length()
     {
-        double lgth;
-        lgth = Math.pow(_head.get_x().get(),2) +
+        double lgth = Math.pow(_head.get_x().get(),2) +
                 Math.pow(_head.get_y().get(),2) +
                 Math.pow(_head.get_z().get(), 2);
         lgth = Math.sqrt(lgth);

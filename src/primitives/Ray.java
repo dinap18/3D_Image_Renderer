@@ -1,9 +1,21 @@
+
 package primitives;
 
+   /**
+         *Class Ray
+        
+         */
 public class Ray
 {
+       /**
+         *Fields (point3D,vector)
+         */
     Point3D _p0;
     Vector _dir;
+       /**
+         *Constructor of Ray with point3D and vector in parameter 
+         * @param point3D and vector
+         */
     public Ray(Point3D p0, Vector dir)
     {
         this._p0 = new Point3D(p0);
@@ -13,6 +25,10 @@ public class Ray
             this._dir.normalize();
         }
     }
+       /**
+         *Constructor of Ray with ray in parameter 
+         * @param ray
+         */
     public Ray(Ray r)
     {
         this._p0 = new Point3D(r._p0);
@@ -22,13 +38,20 @@ public class Ray
             this._dir.normalize();
         }
     }
+    
+       /**
+         *Get point3D function
+       */
     public Point3D get_p0() {
         return _p0;
     }
-
+  /**
+         *Get vector function
+       */
     public Vector get_dir() {
         return _dir;
     }
+   
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -40,6 +63,10 @@ public class Ray
         Ray other = (Ray) obj;
         return _dir.equals(other._dir) && _p0.equals(other._p0);
     }
+       /**
+         *ToString function
+         * @return string with the starting point and the direction
+         */
     @Override
     public String toString()
     {

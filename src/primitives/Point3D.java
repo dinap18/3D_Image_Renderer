@@ -105,9 +105,9 @@ public class Point3D {
          */
         public Vector subtract(Point3D p) {
             return new Vector(new Point3D(
-                    p._x.get()- this._x.get(),
-                    p._y.get()- this._y.get(),
-                    p._z.get()- this._z.get()
+                    this._x.get()-p._x.get() ,
+                    this._y.get()- p._y.get(),
+                    this._z.get()-p._z.get()
             ));
         }
         

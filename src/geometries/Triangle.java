@@ -9,6 +9,9 @@ import java.util.List;
  * Class Triangle
  */
 public class Triangle extends Polygon {
+    Point3D _p1;
+    Point3D _p2;
+    Point3D _p3;
     /**
      * Constructor of the triangle class
      * @param p1

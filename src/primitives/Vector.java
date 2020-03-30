@@ -123,7 +123,7 @@ public class Vector
     /**
      * dot product function
      * @param v-Vector
-     * @return double-returns the dot product of two vectors=𝑢 ∙ 𝑣 = 𝑢1 ∙ 𝑣1 + 𝑢2 ∙ 𝑣2 + 𝑢3 ∙ 𝑣3
+     * @return double-returns the dot product of two vectors=u*v=u1*v1 +u2*v2 +u3*v3
      */
     public double dotProduct(Vector v)
     {
@@ -137,7 +137,7 @@ public class Vector
     /**
      * cross product function
      * @param v-Vector
-     * @return vector-returns the cross product of two vectors=u*v=(𝑢2 ∙ 𝑣3 − 𝑢3 ∙ 𝑣2,𝑢3 ∙ 𝑣1 − 𝑢1 ∙ 𝑣3,𝑢1 ∙ 𝑣2 − 𝑢2 ∙ 𝑣1)
+     * @return vector-returns the cross product of two vectors=u*v=(u2*v3 -u3*v2,u3*v1-u1*v3,u1*v2−-u2*v1)
      */
     public Vector crossProduct(Vector v)
     {

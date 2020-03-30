@@ -114,5 +114,8 @@ class VectorTest {
 
     @Test
     void normalized() {
+        Vector v1=new Vector(2,3,4);
+        Vector v= v1.normalized();
+        assertTrue(v1.equals(new Vector(2/Math.sqrt(29),3/Math.sqrt(29),4/Math.sqrt(29))));
     }
 }

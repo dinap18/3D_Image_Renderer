@@ -27,17 +27,21 @@ public class Cylinder extends Tube
 
     /**
      * Function getNormal
-     * @param p
-     * @return
+     * @param p=Point3D
+     * @return normal vector to the cylinder
      */
-    public Vector getNormal(Point3D p)
-    {
-        return null;
+    public Vector getNormal(Point3D p) {
+        Vector u = new Vector(p.subtract(this._axisRay.get_p0()));
+        double t =this._axisRay.get_dir().dotProduct(u);
+        Point3D point = this._axisRay.get_p0().add(this._axisRay.get_dir().scale(t));
+        Vector n = new Vector(p.subtract(point));
+        return n.normalize();
+
     }
 
     /**
      * Function get_height
-     * @return
+     * @return height of cylinder
      */
     public double get_height() {
         return _height;

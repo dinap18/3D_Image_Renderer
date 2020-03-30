@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PolygonTest {
     /**
      * Test method for
-     * {@link geometries.Polygon(primitives.Point3D, primitives.Point3D, primitives.Point3D, primitives.Point3D)}.
+     *  geometries.Polygon(primitives.Point3D, primitives.Point3D, primitives.Point3D, primitives.Point3D)
      */
     @Test
     public void testConstructor() {

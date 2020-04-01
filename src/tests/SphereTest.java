@@ -7,24 +7,26 @@ import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * sphere tests
+ */
 class SphereTest {
-
+    /**
+     * test for sphere get normal @link geometries.Sphere# getNormal(primitves.Point3D)}.
+     */
     @Test
     void getNormal() {
-        Point3D p=new Point3D(new Coordinate(1),new Coordinate(0),new Coordinate(0));
-        Sphere s=new Sphere(3,p);
-        Vector v1=new Vector(s.getNormal(p));
-        assertEquals(v1.get_head().get_x(), 0.0);
-        assertEquals(v1.get_head().get_y(), 0.0);
-        assertEquals(v1.get_head().get_z(), 0.0);
+        Sphere s = new Sphere(4, new Point3D(0,0,0));
+
+
+        assertTrue(s.getNormal(new Point3D(0,0,4)).equals(new Vector(new Point3D(0,0,1))));
+        assertTrue(s.getNormal(new Point3D(0,0,-4)).equals(new Vector(new Point3D(0,0,-1))));
+        assertTrue(s.getNormal(new Point3D(0,4,0)).equals(new Vector(new Point3D(0,1,0))));
+        assertTrue(s.getNormal(new Point3D(0,-4,0)).equals(new Vector(new Point3D(0,-1,0))));
+        assertTrue(s.getNormal(new Point3D(4,0,0)).equals(new Vector(new Point3D(1,0,0))));
+        assertTrue(s.getNormal(new Point3D(-4,0,0)).equals(new Vector(new Point3D(-1,0,0))));
 
     }
 
-    @Test
-    void get_center() {
-    }
 
-    @Test
-    void testToString() {
-    }
 }

@@ -42,4 +42,12 @@ public class Tube extends RadialGeometry
         Vector check = vector1.subtract(vector2);
         return check.normalize();
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+
+                "axisRay" + _axisRay
+
+                ;
+    }
 }

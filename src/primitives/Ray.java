@@ -10,8 +10,8 @@ public class Ray
        /**
          *Fields (point3D,vector)
          */
-    Point3D _p0;
-    Vector _dir;
+    private final Point3D _p0;
+    private final Vector _dir;
        /**
          *Constructor of Ray with point3D and vector in parameter 
          * @param p0-Point3D ,dir-Vector
@@ -19,11 +19,8 @@ public class Ray
     public Ray(Point3D p0, Vector dir)
     {
         this._p0 = new Point3D(p0);
-        this._dir = new Vector (dir);
-        if(_dir.length()!=1.0)
-        {
-            this._dir.normalize();
-        }
+        this._dir = new Vector(dir).normalized();
+
     }
        /**
          *Copy constructor of Ray
@@ -32,11 +29,7 @@ public class Ray
     public Ray(Ray r)
     {
         this._p0 = new Point3D(r._p0);
-        this._dir = new Vector (r._dir);
-        if(_dir.length()!=1.0)
-        {
-            this._dir.normalize();
-        }
+        this._dir = r._dir.normalized();
     }
     
        /**
@@ -70,6 +63,6 @@ public class Ray
     @Override
     public String toString()
     {
-        return "starting point"+_p0.toString()+" direction:" + _dir.toString();
+        return "starting point"+this._p0.toString()+" direction:" + this._dir.toString();
     }
 }

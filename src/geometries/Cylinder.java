@@ -31,7 +31,7 @@ public class Cylinder extends Tube
      * @return normal vector to the cylinder
      */
     public Vector getNormal(Point3D p) {
-        Vector u = new Vector(p.subtract(this._axisRay.get_p0()));
+        Vector u = p.subtract(this._axisRay.get_p0());
         double t =this._axisRay.get_dir().dotProduct(u);
         Point3D point = this._axisRay.get_p0().add(this._axisRay.get_dir().scale(t));
         Vector n = new Vector(p.subtract(point));

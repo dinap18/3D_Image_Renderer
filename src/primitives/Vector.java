@@ -194,4 +194,10 @@ public class Vector
         return new Vector(this.normalize());
     }
 
+    @Override
+    public String toString() {
+        return
+                "head" + _head
+                ;
+    }
 }

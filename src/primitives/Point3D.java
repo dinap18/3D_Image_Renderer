@@ -49,7 +49,7 @@ public class Point3D {
      * @param p
      */
     public Point3D(Point3D p) {
-        new Point3D(new Coordinate(p._x),new Coordinate(p._y),
+        new Point3D(_x=new Coordinate(p._x),_y=new Coordinate(p._y),
         _z = new Coordinate(p._z));
     }
 
@@ -105,10 +105,9 @@ public class Point3D {
          */
         public Vector subtract(Point3D p) {
             return new Vector(new Point3D(
-                    this._x.get()-p._x.get() ,
-                    this._y.get()- p._y.get(),
-                    this._z.get()-p._z.get()
-            ));
+                    this._x._coord - p._x._coord,
+                    this._y._coord - p._y._coord,
+                    this._z._coord - p._z._coord));
         }
         
             /**

@@ -30,7 +30,7 @@ public class Plane implements Geometry
         N.normalize();
 
         _normal = N.scale(-1);
-
+        _p=p1;
     }
 
     /**

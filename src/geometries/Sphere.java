@@ -1,7 +1,13 @@
 package geometries;
 
 import primitives.Point3D;
+import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
+
+import java.util.ArrayList;
+import java.util.IllegalFormatException;
+import java.util.List;
 
 /**
  * Class Sphere
@@ -52,5 +58,48 @@ public class Sphere extends RadialGeometry
     public String toString() {
         return super.toString()+
                 " center" + _center ;
+    }
+
+    /**
+     * finds intersections between a ray and a sphere
+     * @param ray - to check if it intersects with the sphere
+     * @return the intersection point3Ds
+     */
+    @Override
+    public  List<Point3D> findIntersections(Ray ray) {
+        Point3D p = ray.get_p0();
+        Vector v = ray.get_dir();
+        Vector u;
+        try {
+            u = _center.subtract(p);
+        } catch (IllegalArgumentException e)// if the vector is the zero vector
+        {
+          return List.of(ray.getTargetPoint(_radius));
+        }
+        double dotProduct=v.dotProduct(u);
+        double tm = Util.alignZero(dotProduct);
+        double dSquared;
+        if(tm==0)
+        {
+            dSquared=u.lengthSquared();
+        }
+        else {
+            dSquared=u.lengthSquared() - tm * tm;
+        }
+        double thSquared = Util.alignZero(_radius * _radius - dSquared);
+
+        if (thSquared <= 0) return null;
+
+        double th = Util.alignZero(Math.sqrt(thSquared));
+        if (th == 0) return null;
+
+        double t1 = Util.alignZero(tm - th);
+        double t2 = Util.alignZero(tm + th);
+        if (t1 <= 0 && t2 <= 0) return null;
+        if (t1 > 0 && t2 > 0) return List.of(ray.getTargetPoint(t1), ray.getTargetPoint(t2)); //P1 , P2
+        if (t1 > 0)
+            return List.of(ray.getTargetPoint(t1));
+        else
+            return List.of(ray.getTargetPoint(t2));
     }
 }

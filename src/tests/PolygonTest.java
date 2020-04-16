@@ -7,17 +7,15 @@ import primitives.Vector;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Polygon tests
  */
 class PolygonTest {
     /**
-     * Test method for
-     *  geometries.Polygon(primitives.Point3D, primitives.Point3D, primitives.Point3D, primitives.Point3D)
+     * Test method for Polygon constructor
      */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
 
@@ -78,14 +76,15 @@ class PolygonTest {
     /**
      * Test method for {@link geometries.Polygon#getNormal(primitives.Point3D)}.
      */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: There is a simple single test here
         Polygon pl = new Polygon(new Point3D(0, 0, 1), new Point3D(1, 0, 0), new Point3D(0, 1, 0),
                 new Point3D(-1, 1, 1));
         double sqrt3 = Math.sqrt(1d / 3);
-        assertEquals("Bad normal to triangle", new Vector(sqrt3, sqrt3, sqrt3), pl.getNormal(new Point3D(0, 0, 1)));
+        assertEquals("Bad normal to triangle", new Vector(-sqrt3, -sqrt3, -sqrt3), pl.getNormal(new Point3D(0, 0, 1)));
     }
+
 
 }

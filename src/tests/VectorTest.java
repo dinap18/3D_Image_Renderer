@@ -14,7 +14,7 @@ class VectorTest {
 
 
     /**
-     * test for vector subtraction function @link primitives.Vector# subtract(primitves.Vector);}.
+     * test for vector subtraction function {@link primitives.Vector#subtract(primitives.Vector)}.
      */
     @Test
     void subtract()
@@ -31,7 +31,7 @@ class VectorTest {
     }
 
     /**
-     * test for vector addition function @link primitives.Vector# add(primitves.Vector);}.
+     * test for vector addition function {@link primitives.Vector#add(primitves.Vector)}.
      */
     @Test
     void add() {
@@ -47,7 +47,7 @@ class VectorTest {
     }
 
     /**
-     * test for vector scaling function @link primitives.Vector# subtract(double);}.
+     * test for vector scaling function (@link primitives.Vector# subtract(double)}.
      */
     @Test
     void scale() {
@@ -62,7 +62,7 @@ class VectorTest {
     }
 
     /**
-     * test for vector dot product function @link primitives.Vector# dotProduct(primitves.Vector);}.
+     * test for vector dot product function {@link primitives.Vector#dotProduct(primitives.Vector)}.
      */
     @Test
     void dotProduct() {
@@ -76,7 +76,7 @@ class VectorTest {
     }
 
     /**
-     * test for vector cross product function @link primitives.Vector# crossProduct(primitves.Vector);}.
+     * test for vector cross product function {@link primitives.Vector#crossProduct(primitives.Vector)}.
      */
     @Test
     void crossProduct() {
@@ -104,7 +104,7 @@ class VectorTest {
     }
 
     /**
-     * test for vector length squared function @link primitives.Vector# lengthSquared();}.
+     * test for vector length squared function {@link primitives.Vector#lengthSquared()}.
      */
     @Test
     void lengthSquared() {
@@ -115,7 +115,7 @@ class VectorTest {
     }
 
     /**
-     * test for vector length function @link primitives.Vector# length();}.
+     * test for vector length function {@link primitives.Vector#length()}.
      */
     @Test
     void length() {
@@ -126,7 +126,7 @@ class VectorTest {
     }
 
     /**
-     * test for vector normalize function @link primitives.Vector# normalize();}.
+     * test for vector normalize function {@link primitives.Vector#normalize()}.
      */
     @Test
     void normalize() {
@@ -156,7 +156,7 @@ class VectorTest {
     }
 
     /**
-     * test for vector normalized function  @link primitives.Vector# normalized();}.
+     * test for vector normalized function  {@link primitives.Vector#normalized()}.
      */
     @Test
     void normalized() {

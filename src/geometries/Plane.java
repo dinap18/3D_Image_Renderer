@@ -1,9 +1,15 @@
 package geometries;
 
 import primitives.Point3D;
+import primitives.Ray;
 import primitives.Vector;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
 /**
  * Class Plane implements the geometry interface
@@ -79,5 +85,29 @@ public class Plane implements Geometry
     @Override
     public String toString() {
         return  "point" + _p +  ", normal" + _normal;
+    }
+
+    /**
+     * finds intersections between a ray and a plane
+     * @param ray
+     * @return list of Point3Ds that intersect with the plane
+     */
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        Vector v;
+        try {
+            v= _p.subtract(ray.get_p0());
+        } catch (IllegalArgumentException e) {
+            return null; // ray starts from point Q - no intersections
+        }
+
+        double nv = _normal.dotProduct(ray.get_dir());
+        if (isZero(nv)) // ray is parallel to the plane - no intersections
+            return null;
+
+        double t = alignZero(_normal.dotProduct(v) / nv);
+         if(t<=0)
+             return null;
+        return List.of(ray.getTargetPoint(t));
     }
 }

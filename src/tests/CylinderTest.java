@@ -12,7 +12,7 @@ import primitives.*;
  */
 class CylinderTest {
     /**
-     * test for cylinder get normal function @link geometries.Cylinder# getNormal(primitves.Point3D)}.
+     * test for cylinder get normal function @link geometries.Cylinder#getNormal(primitves.Point3D)}.
      */
     @Test
     void getNormal() {

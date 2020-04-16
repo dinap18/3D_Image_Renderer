@@ -56,6 +56,14 @@ public class Ray
         Ray other = (Ray) obj;
         return _dir.equals(other._dir) && _p0.equals(other._p0);
     }
+
+    /**
+     * returns the target point of a ray
+     * @param length of the ray
+     * @return ray's target point
+     */
+    public Point3D getTargetPoint(double length) {
+        return Util.isZero(length ) ? _p0 : _p0.add(_dir.scale(length));}
        /**
          *ToString function
          * @return string with the starting point and the direction

@@ -14,7 +14,7 @@ import primitives.*;
  */
 class TubeTest {
     /**
-     * test for tube get normal function @link geometries.Tube# getNormal(primitves.Point3D)}.
+     * test for tube get normal function {@link geometries.Tube#getNormal(primitives.Point3D)}.
      * }
      */
     @Test

@@ -2,6 +2,8 @@ package geometries;
 
 import primitives.*;
 
+import java.util.List;
+
 /**
  * class Tube
  */
@@ -49,5 +51,15 @@ public class Tube extends RadialGeometry
                 "axisRay" + _axisRay
 
                 ;
+    }
+
+    /**
+     * finds the intersection points between a ray and a tube
+     * @param ray
+     * @return list of intersection points
+     */
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        return null;
     }
 }

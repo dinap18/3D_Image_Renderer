@@ -31,7 +31,7 @@ class VectorTest {
     }
 
     /**
-     * test for vector addition function {@link primitives.Vector#add(primitves.Vector)}.
+     * test for vector addition function {@link primitives.Vector#add(primitives.Vector)}.
      */
     @Test
     void add() {

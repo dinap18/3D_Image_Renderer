@@ -8,7 +8,7 @@ package primitives;
 public class Ray
 {
        /**
-         *Fields (point3D,vector)
+         *Fields (point3D,Vector)
          */
     private final Point3D _p0;
     private final Vector _dir;

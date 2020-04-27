@@ -1,4 +1,4 @@
-package tests;
+package unitTests.geometryTests;
 
 import geometries.*;
 import geometries.Polygon;
@@ -6,9 +6,6 @@ import org.junit.jupiter.api.Test;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
-
-import java.awt.*;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 

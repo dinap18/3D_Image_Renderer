@@ -1,4 +1,7 @@
 unnamed package
+elements
 geometries
 primitives
-tests
+unitTests.elementTests
+unitTests.geometryTests
+unitTests.primitivesTests

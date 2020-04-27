@@ -1,11 +1,9 @@
-package tests;
+package unitTests.primitivesTests;
 
 import org.junit.jupiter.api.Test;
 import primitives.*;
 
-import static java.lang.System.out;
 import static org.junit.jupiter.api.Assertions.*;
-import static primitives.Util.isZero;
 
 /**
  * vector tests

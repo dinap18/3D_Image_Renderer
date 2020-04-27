@@ -1,11 +1,10 @@
-package tests;
+package unitTests.geometryTests;
 
 import geometries.Tube;
 import org.junit.jupiter.api.Test;
 import primitives.Point3D;
 import primitives.Vector;
 
-import static java.lang.System.out;
 import static org.junit.jupiter.api.Assertions.*;
 import primitives.*;
 /**

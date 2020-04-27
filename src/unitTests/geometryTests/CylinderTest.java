@@ -1,9 +1,7 @@
-package tests;
-
+package unitTests.geometryTests;
 import geometries.Cylinder;
 import org.junit.jupiter.api.Test;
 
-import static java.lang.System.out;
 import static org.junit.jupiter.api.Assertions.*;
 import primitives.*;
 
@@ -12,7 +10,7 @@ import primitives.*;
  */
 class CylinderTest {
     /**
-     * test for cylinder get normal function @link geometries.Cylinder#getNormal(primitves.Point3D)}.
+     * test for cylinder get normal function @link geometries.Cylinder#getNormal(primitives.Point3D)}.
      */
     @Test
     void getNormal() {

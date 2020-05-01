@@ -2,6 +2,9 @@ unnamed package
 elements
 geometries
 primitives
+renderer
+scene
+unitTests
 unitTests.elementTests
 unitTests.geometryTests
 unitTests.primitivesTests

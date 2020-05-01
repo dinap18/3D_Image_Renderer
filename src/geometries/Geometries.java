@@ -52,4 +52,14 @@ public class Geometries implements Intersectable {
         }
         return intersections;
     }
+
+    /**
+     * removes geometries from list of intersectable geometries
+     * @param intersectables instersectable geometries to remove from list
+     */
+    public void remove(Intersectable... intersectables) {
+        for (Intersectable geo : _geometries) {
+            _geometries.remove(geo);
+        }
+    }
 }

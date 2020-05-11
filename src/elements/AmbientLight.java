@@ -9,8 +9,8 @@ public class AmbientLight {
      *get color intensity function
      * @return color intensity
      */
-    public java.awt.Color getIntensity() {
-        return _intensity.getColor();
+    public Color getIntensity() {
+        return _intensity;
     }
 
     private Color _intensity;
@@ -25,12 +25,16 @@ public class AmbientLight {
 
     /**
      * constructor for ambient light class
-     * @param _intensity color intensity
-     * @param ka always equals 1
+     * @param intensity color intensity
+     * @param kA always equals 1
      */
-    public AmbientLight(Color _intensity, double ka) {
-        // ka is always 1 so we don't use it
-        this._intensity = _intensity;
+    public AmbientLight(Color intensity, double kA) {
+        _intensity = intensity.scale(kA);
     }
+
+    public AmbientLight(Color iA) {
+        this(iA, 1.d);
+    }
+
 
 }

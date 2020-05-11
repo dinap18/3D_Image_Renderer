@@ -41,8 +41,7 @@ public class Geometries implements Intersectable {
     public List<Point3D> findIntersections(Ray ray) {
         List<Point3D> intersections = null;
 
-        for (Intersectable geo : _geometries)
-        {
+        for (Intersectable geo : _geometries) {
             List<Point3D> tempIntersections = geo.findIntersections(ray);
             if (tempIntersections != null) {
                 if (intersections == null)
@@ -51,8 +50,17 @@ public class Geometries implements Intersectable {
             }
         }
         return intersections;
-    }
 
+    }
+    /**
+     * adds all intersectable geometries to list
+     * @param geometries list of intersectable geometries
+     */
+    public void addAll(Intersectable... geometries) {
+        for (Intersectable geo : geometries) {
+            _geometries.add(geo);
+        }
+    }
     /**
      * removes geometries from list of intersectable geometries
      * @param intersectables instersectable geometries to remove from list

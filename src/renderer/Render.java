@@ -1,5 +1,6 @@
 package renderer;
 
+import elements.AmbientLight;
 import elements.Camera;
 import geometries.Intersectable;
 import primitives.*;
@@ -13,12 +14,13 @@ import java.util.List;
  * class Render
  */
 public class Render {
-    private Scene _scene;
-    private ImageWriter _imageWriter;
+    private final ImageWriter _imageWriter;
+    private final Scene _scene;
 
-    public Render(Scene _scene) {
+   /* public Render(Scene _scene,ImageWriter _imageWriter) {
         this._scene = _scene;
-    }
+        this._imageWriter=_imageWriter;
+    }*/
 
     /**
      * constructor for class render
@@ -43,29 +45,26 @@ public class Render {
      * This function does not creating the picture file, but create the buffer pf pixels
      */
     public void renderImage() {
-        java.awt.Color background = _scene.getBackground().getColor();
-        Camera camera= _scene.getCamera();
+        Camera camera = _scene.getCamera();
         Intersectable geometries = _scene.getGeometries();
-        double  distance = _scene.getDistance();
+        java.awt.Color background = _scene.getBackground().getColor();
+        AmbientLight ambientLight = _scene.getAmbientLight();
+        double distance = _scene.getDistance();
 
-        //width and height are the number of pixels in the rows
-        //and columns of the view plane
-        int width = (int) _imageWriter.getWidth();
-        int height = (int) _imageWriter.getHeight();
-
-        //Nx and Ny are the width and height of the image.
         int Nx = _imageWriter.getNx();
         int Ny = _imageWriter.getNy();
-        Ray ray;
+        double width = _imageWriter.getWidth();
+        double height = _imageWriter.getHeight();
+
         for (int row = 0; row < Ny; row++) {
-            for (int column = 0; column < Nx; column++) {
-                ray = camera.constructRayThroughPixel(Nx, Ny, row, column, distance, width, height);
-                List<Point3D> intersectionPoints = _scene.getGeometries().findIntersections(ray);
+            for (int collumn = 0; collumn < Nx; collumn++) {
+                Ray ray = camera.constructRayThroughPixel(Nx, Ny, collumn, row, distance, width, height);
+                List<Point3D> intersectionPoints = geometries.findIntersections(ray);
                 if (intersectionPoints == null) {
-                    _imageWriter.writePixel(column, row, background);
+                    _imageWriter.writePixel(collumn, row, background);
                 } else {
                     Point3D closestPoint = getClosestPoint(intersectionPoints);
-                    _imageWriter.writePixel(column-1, row-1, calcColor(closestPoint));
+                    _imageWriter.writePixel(collumn, row, calcColor(closestPoint).getColor());
                 }
             }
         }
@@ -79,19 +78,19 @@ public class Render {
      */
 
     private Point3D getClosestPoint(List<Point3D> intersectionPoints) {
-        Point3D result = null;
-        double mindist = Double.MAX_VALUE;
+        Point3D p0 = _scene.getCamera().get_p0();
+        Point3D pt = null;
+        double minDist = Double.MAX_VALUE;
+        double currentDistance = 0;
 
-        Point3D p0 = this._scene.getCamera().get_p0();
-
-        for (Point3D pt: intersectionPoints ) {
-            double distance = p0.distance(pt);
-            if (distance < mindist){
-                mindist= distance;
-                result =pt;
+        for (Point3D point : intersectionPoints) {
+            currentDistance = p0.distance(point);
+            if (currentDistance < minDist) {
+                minDist = currentDistance;
+                pt = point;
             }
         }
-        return  result;
+        return pt;
     }
 
     /**
@@ -120,7 +119,7 @@ public class Render {
      * @param point the point for which the color is required
      * @return the color intensity
      */
-    private Color calcColor(Point3D point) {
+    private primitives.Color calcColor(Point3D point) {
         return _scene.getAmbientLight().getIntensity();
     }
 

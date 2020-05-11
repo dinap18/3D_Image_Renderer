@@ -8,13 +8,12 @@ import primitives.*;
  */
 public class Scene {
 
-    final String _name;
-    final Geometries _geometries = new Geometries(); ;
-
-    Color _background;
-     Camera _camera;
-     double _distance;
-     AmbientLight _ambientLight;
+    private final String _name;
+    private Color _background;
+    private AmbientLight _ambientLight;
+    private Camera _camera;
+    private double _distance;
+    private Geometries _geometries = null;
 
 
     /**
@@ -70,9 +69,11 @@ public class Scene {
      * @param intersectables intersectable geometries to be added to the scene
      */
     public void addGeometries(Intersectable... intersectables) {
-        for (Intersectable i:intersectables ) {
-            _geometries.add(i);
+        if (_geometries == null) {
+            _geometries = new Geometries();
         }
+            _geometries.addAll(intersectables);
+
     }
 
     /**

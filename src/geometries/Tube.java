@@ -12,23 +12,45 @@ public class Tube extends RadialGeometry
     /**
      * fields (axisRay)
      */
-    Ray _axisRay;
+     Ray _axisRay;
 
     /**
      * Constructor of the tube class
-     * @param _radius
-     * @param _axisRay
+     * @param _radius the radius of the tube
+     * @param _axisRay the axis ray of the tube
      */
     public Tube(double _radius, Ray _axisRay)
     {
-        super(_radius);
-        this._axisRay = _axisRay;
+        this(Color.BLACK, new Material(0, 0, 0), _radius, _axisRay);
     }
 
+    /**
+     *  constructor for class Tube
+     * @param emissionLight the emission light
+     * @param _material the material of the tube
+     * @param _radius the tube's radius
+     * @param _ray the axis ray of the tube
+     */
+    public Tube(Color emissionLight, Material _material, double _radius, Ray _ray) {
+        super(Color.BLACK, _radius);
+        this._material = _material;
+        this._axisRay = new Ray(_ray);
+
+    }
+
+    /**
+     * constructor for class Tube
+     * @param emissionLight the emission light
+     * @param _radius the radius of the tube
+     * @param _ray the axis ray of the tube
+     */
+    public Tube(Color emissionLight, double _radius, Ray _ray) {
+        this(emissionLight, new Material(0, 0, 0), _radius, _ray);
+    }
  /**
      * getNormal function
      * @param p-point3D
-     * @return vector  
+     * @return normal vector
      */
     @Override
     public Vector getNormal(Point3D p) {
@@ -59,7 +81,7 @@ public class Tube extends RadialGeometry
      * @return list of intersection points
      */
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findIntersections(Ray ray) {
         return null;
     }
 }

@@ -1,12 +1,14 @@
 package geometries;
 
-import primitives.Point3D;
-import primitives.Vector;
+
+import primitives.*;
+
+import static primitives.Util.isZero;
 
 /**
  * The abstract class RadialGeometry
  */
-public abstract class RadialGeometry implements Geometry
+public abstract class RadialGeometry extends Geometry
 {
 
     /**
@@ -24,24 +26,37 @@ public abstract class RadialGeometry implements Geometry
 
     /**
      * Constructor of the class RadialGeometry
-     * @param _radius
+     * @param radius double
+     *  @param material Material
+     * @param emissionLight emission light color
      */
-    public RadialGeometry(double _radius)
-    {
-        this._radius = _radius;
+    public RadialGeometry(Color emissionLight, double radius, Material material) {
+        super(emissionLight, material);
+        if (isZero(radius) || (radius < 0.0))
+            throw new IllegalArgumentException("radius " + radius + " is not valid");
+        this._radius = radius;
     }
-
     /**
      *  Constructor of the class RadialGeometry
      * @param r-radius
      */
-    public RadialGeometry(RadialGeometry r)
-    {
-        this._radius=r._radius;
+    public RadialGeometry(RadialGeometry r) {
+        super(r._emission, r._material);
+        // we can assume that other._radius is valid
+        this._radius = r._radius;
     }
 
     /**
-     * getRadius Fonction
+     * constructor for RadialGeometry
+     * @param emissionLight emission light color
+     * @param radius double radius
+     */
+    public RadialGeometry(Color emissionLight, double radius) {
+        this(emissionLight, radius, new Material(0, 0, 0));
+    }
+
+    /**
+     * getRadius Function
      * @return radius
      */
     public double get_radius()

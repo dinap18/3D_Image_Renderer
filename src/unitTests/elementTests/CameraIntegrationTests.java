@@ -25,7 +25,7 @@ public class CameraIntegrationTests {
         Camera cam1 = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
         Camera cam2 = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         Sphere sph =  new Sphere(1, new Point3D(0, 0, 3));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
         int count = 0;
         int Nx =3;
         int Ny =3;
@@ -96,7 +96,7 @@ public class CameraIntegrationTests {
     public void constructRayThroughPixelWithPlane()
     {
         Camera cam = new Camera (Point3D.ZERO, new Vector (0,0,1), new Vector (0,-1,0));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
         int count;
         //Tc01: 9 intersection points- plane against camera
         Plane plane1=new Plane ( new Point3D (0,0,5), new Vector (0,0,1));
@@ -147,7 +147,7 @@ public class CameraIntegrationTests {
     public void constructRayThroughPixelWithTriangle()
     {
         Camera cam= new Camera(Point3D.ZERO,new Vector(0,0,1),new Vector(0,-1,0));
-        List<Point3D>results;
+        List<Intersectable.GeoPoint>results;
         int count=0;
         //TC01: 1 intersection point- small triangle
         Triangle tr1= new Triangle ( new Point3D(1,1,2),new Point3D(-1,1,2), new Point3D (0,-1,2));

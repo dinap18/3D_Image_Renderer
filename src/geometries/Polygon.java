@@ -1,7 +1,9 @@
 package geometries;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import primitives.Material;
 import primitives.*;
 import static primitives.Util.*;
 
@@ -11,7 +13,7 @@ import static primitives.Util.*;
  *
  * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends FlatGeometry {
     /**
      * List of polygon's vertices
      */
@@ -42,7 +44,9 @@ public class Polygon implements Geometry {
      *                                  <li>The polygon is concave (not convex</li>
      *                                  </ul>
      */
-    public Polygon(Point3D... vertices) {
+    public Polygon(Color emissionLight, Material material, Point3D... vertices) {
+        super(emissionLight, material);
+
         if (vertices.length < 3)
             throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
         _vertices = List.of(vertices);
@@ -81,6 +85,23 @@ public class Polygon implements Geometry {
         }
     }
 
+    /**
+     * constructor for class polygon - 2 parameters
+     * @param emissionLight emission light color
+     * @param vertices Point3D vertices
+     */
+    public Polygon(Color emissionLight, Point3D... vertices) {
+        this(emissionLight, new Material(0, 0, 0), vertices);
+    }
+
+    /**
+     * constructor for class polygon - 1 parameter
+     * @param vertices Point3D vertices
+     */
+    public Polygon(Point3D... vertices) {
+        this(Color.BLACK, new Material(0, 0, 0), vertices);
+//        this(new Color(java.awt.Color.RED),new Material(0,0,0),vertices);
+    }
     @Override
     public Vector getNormal(Point3D point) {
         return _plane.get_normal();
@@ -92,17 +113,17 @@ public class Polygon implements Geometry {
      * @return list of Point3Ds that intersect with the polygon
      */
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
-        List<Point3D> intersections = _plane.findIntersections(ray);
-        if (intersections == null) return null;
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> planeIntersections = _plane.findIntersections(ray);
+        if (planeIntersections == null)
+            return null;
 
-        Point3D p = ray.get_p0();
+        Point3D p0 = ray.get_p0();
         Vector v = ray.get_dir();
 
-        Vector v1  = _vertices.get(1).subtract(p);
-        Vector v2 = _vertices.get(0).subtract(p);
-        Vector crossProduct=v1.crossProduct(v2);
-        double sign = v.dotProduct(crossProduct);
+        Vector v1 = _vertices.get(1).subtract(p0);
+        Vector v2 = _vertices.get(0).subtract(p0);
+        double sign = v.dotProduct(v1.crossProduct(v2));
         if (isZero(sign))
             return null;
 
@@ -110,15 +131,17 @@ public class Polygon implements Geometry {
 
         for (int i = _vertices.size() - 1; i > 0; --i) {
             v1 = v2;
-            v2 = _vertices.get(i).subtract(p);
-            double dotProduct=v.dotProduct(v1.crossProduct(v2));
-            sign = alignZero(dotProduct);
-            if (isZero(sign))
-                return null;
-            if (positive != (sign >0))
-                return null;
+            v2 = _vertices.get(i).subtract(p0);
+            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
+            if (isZero(sign)) return null;
+            if (positive != (sign > 0)) return null;
         }
 
-        return intersections;
+        //for GeoPoint
+        List<GeoPoint> result = new LinkedList<>();
+        for (GeoPoint geo : planeIntersections) {
+            result.add(new GeoPoint(this, geo.getPoint()));
+        }
+        return result;
     }
 }

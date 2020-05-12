@@ -4,7 +4,7 @@ geometries
 primitives
 renderer
 scene
-unitTests
 unitTests.elementTests
 unitTests.geometryTests
 unitTests.primitivesTests
+unitTests.rendererTests

@@ -3,6 +3,9 @@ import elements.*;
 import geometries.*;
 import primitives.*;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * class scene
  */
@@ -14,7 +17,29 @@ public class Scene {
     private Camera _camera;
     private double _distance;
     private Geometries _geometries = null;
+    private List<LightSource> _lights = null;
 
+    /**
+     * get light sources function
+     * @return list of light sources
+     */
+    public List<LightSource> getLightSources() {
+        return _lights;
+    }
+
+    /**
+     * adds a light source to the the list of light sources
+     * @param light light to add to list
+     */
+    public void addLights(LightSource ... light) {
+        if (_lights == null) {
+            _lights = new LinkedList<>();
+        }
+        for (LightSource l:light ) {
+            _lights.add(l);
+        }
+
+    }
 
     /**
      * get ambient light function

@@ -10,7 +10,9 @@ import java.util.List;
  * class scene
  */
 public class Scene {
-
+    /**
+     * fields for class scene
+     */
     private final String _name;
     private Color _background;
     private AmbientLight _ambientLight;
@@ -148,6 +150,9 @@ public class Scene {
      */
     public static class  SceneBuilder
     {
+        /**
+         * fields for static class scene builder
+         */
         private  String _name;
         private Color _background;
         private  Camera _camera;

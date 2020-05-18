@@ -54,19 +54,17 @@ public class Tube extends RadialGeometry
      */
     @Override
     public Vector getNormal(Point3D p) {
-        //The vector from the point of the cylinder to the given point
-        Vector vector1 = p.subtract(this._axisRay.get_p0());
-
-        //We need the projection to multiply the _direction unit vector
-        double projection = vector1.dotProduct(this._axisRay.get_dir());
-
-        Vector vector2 = this._axisRay.get_dir().scale(projection);
-
-        //This vector is orthogonal to the _direction vector.
-        Vector check = vector1.subtract(vector2);
-        return check.normalize();
+        Vector vector1 = p.subtract(this._axisRay.get_p0());//The vector from the point of the cylinder to the given point
+         double projection = vector1.dotProduct(this._axisRay.get_dir());//We need the projection to multiply the _direction unit vector
+         Vector vector2 = this._axisRay.get_dir().scale(projection);//scales the direction vector of the axis ray with the projection
+          Vector check = vector1.subtract(vector2);
+        return check.normalize();//normalizes the normal vector
     }
 
+    /**
+     * to string
+     * @return string that describes a tube
+     */
     @Override
     public String toString() {
         return super.toString()+

@@ -194,6 +194,10 @@ public class Vector
         return new Vector(this.normalize());
     }
 
+    /**
+     * to string for vector
+     * @return string that describes a vector
+     */
     @Override
     public String toString() {
         return

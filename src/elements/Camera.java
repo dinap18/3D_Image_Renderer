@@ -11,6 +11,9 @@ import static primitives.Util.isZero;
  * class Camera
  */
 public class Camera {
+    /**
+     * fields for class camera
+     */
     Point3D _p0;
     Vector _vUp;
     Vector _vTo;
@@ -59,6 +62,7 @@ public class Camera {
 
         if (_vUp.dotProduct(_vTo) != 0)
             throw new IllegalArgumentException("vUp and vTo need to be orthogonal");
+        //all vectors need to be normalized
         this._vUp = _vUp.normalized();
         this._vTo = _vTo.normalized();
         this._p0 =  new Point3D(_p0);
@@ -79,27 +83,27 @@ public class Camera {
      */
     public Ray constructRayThroughPixel(int nX, int nY,int j, int i, double screenDistance, double screenWidth, double screenHeight)
     {
-        if (isZero(screenDistance))
+        if (isZero(screenDistance))//the distance between the camera and the view plane cannot be zero
         {
             throw new IllegalArgumentException("distance cannot be 0");
         }
-        Vector v=_vTo.scale(screenDistance);
-        Point3D Pc = _p0.add(v);
+        Vector v=_vTo.scale(screenDistance);//vto scaled by the screen distance
+        Point3D Pc = _p0.add(v);//adds the new vector to the starting point of the ray
 
-        double Ry = screenHeight/nY;
-        double Rx = screenWidth/nX;
+        double Ry = screenHeight/nY;//screen height divided by the view plane column pixels
+        double Rx = screenWidth/nX;//screen width divided by the view plane row pixels
 
-        double yi =  ((i - nY/2d)*Ry + Ry/2d);
-        double xj=   ((j - nX/2d)*Rx + Rx/2d);
+        double yi =  ((i - nY/2d)*Ry + Ry/2d);//(row pixels minus half of the view plane column pixels)*Ry +Ry/2
+        double xj=   ((j - nX/2d)*Rx + Rx/2d);//(column pixels minus half of the view plane row pixels)*Rx +Rx/2
 
-        Point3D Pij = Pc;
+        Point3D Pij = Pc;//ray stating point + vup scaled by screen distance
 
-        if (! isZero(xj))
+        if (! isZero(xj))//we need to scale vright with it so it cannot be zero
         {
             Vector w=_vRight.scale(xj);
             Pij = Pij.add(w);
         }
-        if (! isZero(yi))
+        if (! isZero(yi))//we need to scale vup with it so it cannot be zero
         {
             Vector u=_vUp.scale(-yi);
             Pij = Pij.add(u);
@@ -107,7 +111,7 @@ public class Camera {
 
         Vector Vij = Pij.subtract(_p0);
 
-        return new Ray(_p0,Vij);
+        return new Ray(_p0,Vij);//returns a new ray with the same starting point and a different vector
 
     }
 

@@ -45,7 +45,7 @@ public class Polygon extends FlatGeometry {
      *                                  </ul>
      */
     public Polygon(Color emissionLight, Material material, Point3D... vertices) {
-        super(emissionLight, material);
+        super(emissionLight, material);//calls flat geometry constructor to assign the emission light and material
 
         if (vertices.length < 3)
             throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
@@ -115,33 +115,40 @@ public class Polygon extends FlatGeometry {
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
         List<GeoPoint> planeIntersections = _plane.findIntersections(ray);
-        if (planeIntersections == null)
+        if (planeIntersections == null)//if there are no intersections with the plane there wont be any with the polygon
             return null;
 
         Point3D p0 = ray.get_p0();
         Vector v = ray.get_dir();
 
-        Vector v1 = _vertices.get(1).subtract(p0);
-        Vector v2 = _vertices.get(0).subtract(p0);
-        double sign = v.dotProduct(v1.crossProduct(v2));
-        if (isZero(sign))
+        Vector v1 = _vertices.get(1).subtract(p0);// the starting point of the ray subtracted from the second point3D in the list of vertices
+        Vector v2 = _vertices.get(0).subtract(p0);// the starting point of the ray subtracted from the first point3D in the list of vertices
+        Vector v3=v1.crossProduct(v2);//cross product between the two vectors we just calculated
+        double sign = v.dotProduct(v3);//dot product between the ray direction and v3 that we just calculated
+        if (isZero(sign))//if the sign is zero there are no intersection points
             return null;
 
-        boolean positive = sign > 0;
-
+        boolean positive = sign > 0;//true if sign is bigger than zero, else false
+        Vector v4;
+        double resultt;
         for (int i = _vertices.size() - 1; i > 0; --i) {
             v1 = v2;
-            v2 = _vertices.get(i).subtract(p0);
-            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
-            if (isZero(sign)) return null;
-            if (positive != (sign > 0)) return null;
+            v2 = _vertices.get(i).subtract(p0);//starting point of ray subtracted from the current point3d from list
+            v4=v1.crossProduct(v2);//current v2 cross product previous v2
+            resultt=v.dotProduct(v4);//dot product between v4 and the ray direction
+            sign = alignZero(resultt);
+            if (isZero(sign))//if the dot product is zero there are no intersections
+                return null;
+            if (positive != (sign > 0))//if the sign isnt bigger than zero there are no intersection points
+                return null;
         }
 
-        //for GeoPoint
+
         List<GeoPoint> result = new LinkedList<>();
-        for (GeoPoint geo : planeIntersections) {
+        for (GeoPoint geo : planeIntersections)//creates a new geopoint for each one in the plane intersections list
+        {
             result.add(new GeoPoint(this, geo.getPoint()));
         }
-        return result;
+        return result;//list of geopoint intersections
     }
 }

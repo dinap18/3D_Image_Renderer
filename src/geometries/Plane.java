@@ -30,17 +30,18 @@ public class Plane extends FlatGeometry
      * @param material material
      *
      */
-    public Plane(Color emissionLight, Material material, Point3D p1, Point3D p2, Point3D p3) {
-        super(emissionLight, material);
+    public Plane(Color emissionLight, Material material, Point3D p1, Point3D p2, Point3D p3)
+    {
+        super(emissionLight, material);// calls flat geometry(and geometry) constructor to deal with emission light from the shape and the material
 
-
+        //creates vectors between points to help us find the normal vector
         Vector U = new Vector(p2.subtract(p1));
         Vector V = new Vector(p3.subtract(p1));
-        Vector N = U.crossProduct(V);
-        N.normalize();
+        Vector N = U.crossProduct(V);//the cross product between the two vectors is the normal vector
+        N.normalize();//normalizing the normal vector
 
-        _normal = N.scale(-1);
-        _p=p1;
+        _normal = N.scale(-1);//scaling the normal by -1
+        _p=p1;//assigning a point to the plane for reference
     }
 
     /**
@@ -49,7 +50,7 @@ public class Plane extends FlatGeometry
      * @param _normal-vector
      */
     public Plane(Point3D _p, Vector _normal) {
-        super(Color.BLACK, new Material(0, 0, 0));
+        super(Color.BLACK, new Material(0, 0, 0));//calls flat geometry to assign black as emission color and the material
 
         this._p = _p;
         this._normal = _normal;
@@ -133,9 +134,9 @@ public class Plane extends FlatGeometry
             return null;
 
         double t = alignZero(_normal.dotProduct(v) / nv);
-         if(t<=0)
+         if(t<=0)//there are no intersections
              return null;
         GeoPoint geo = new GeoPoint(this, ray.getTargetPoint(t));
-        return List.of(geo);
+        return List.of(geo);//returns list of geopoint intersections
     }
 }

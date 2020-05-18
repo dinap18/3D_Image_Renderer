@@ -2,7 +2,7 @@ package geometries;
 
 import primitives.*;
 /**
- * abstract class that extends Geometry
+ * abstract class flat geometry that extends Geometry
  */
 public abstract class FlatGeometry extends Geometry {
     public FlatGeometry(Color _emission, Material _material) {
@@ -14,13 +14,13 @@ public abstract class FlatGeometry extends Geometry {
      * @param _emission color
      */
     public FlatGeometry(Color _emission) {
-        super(_emission);
+        super(_emission);// calls Geometry constructor to set emission
     }
 
     /**
      * default constructor for flat geometry
      */
     public FlatGeometry() {
-        super();
+        super();//calls the Geometry default constructor
     }
 }

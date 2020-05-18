@@ -90,34 +90,44 @@ public class Sphere extends RadialGeometry
      */
     @Override
     public  List<GeoPoint> findIntersections(Ray ray) {
-        Point3D p0 = ray.get_p0();
-        Vector v = ray.get_dir();
+        Point3D p0 = ray.get_p0();//beginning point of ray
+        Vector v = ray.get_dir();//direction of ray
         Vector u;
-        try {
-            u = _center.subtract(p0);   // p0 == _center
-        } catch (IllegalArgumentException e) {
-            return List.of(new GeoPoint(this, (ray.getTargetPoint(this._radius))));
+        try//checking if the center of the sphere and p0 are the same point
+        {
+            u = _center.subtract(p0);
+        } catch (IllegalArgumentException e)//zero vector
+        {
+            return List.of(new GeoPoint(this, (ray.getTargetPoint(this._radius))));//geopoint with Point3D that is target point of the radius
         }
-        double tm = alignZero(v.dotProduct(u));
-        double dSquared = (tm == 0) ? u.lengthSquared() : u.lengthSquared() - tm * tm;
+        double tm = alignZero(v.dotProduct(u));//direction of ray dot product vector u
+        double dSquared;
+        if (tm == 0)
+            dSquared= u.lengthSquared() ;//the length of vector u squared
+       else
+        dSquared=u.lengthSquared() - tm * tm;//the length of vector u squared minus v dot product u squared
         double thSquared = alignZero(this._radius * this._radius - dSquared);
 
-        if (thSquared <= 0) return null;
+        if (thSquared <= 0)//if thsquared is smaller than or equal to zero there are no intersection points
+            return null;
 
-        double th = alignZero(Math.sqrt(thSquared));
-        if (th == 0) return null;
+        double th = alignZero(Math.sqrt(thSquared));//square root if thSquared
+        if (th == 0)//if the root if thsquared equals zero there are no intersection points
+            return null;
 
         double t1 = alignZero(tm - th);
         double t2 = alignZero(tm + th);
-        if (t1 <= 0 && t2 <= 0) return null;
-        if (t1 > 0 && t2 > 0) {
+        if (t1 <= 0 && t2 <= 0)//if they are both smaller of equal to zero there are no intersection points
+            return null;
+        if (t1 > 0 && t2 > 0)//if they are both bigger than zero
+        {
             return List.of(
-                    new GeoPoint(this,(ray.getTargetPoint(t1)))
-                    ,new GeoPoint(this,(ray.getTargetPoint(t2)))); //P1 , P2
+                    new GeoPoint(this,(ray.getTargetPoint(t1)))//the target point with t1
+                    ,new GeoPoint(this,(ray.getTargetPoint(t2))));//the target point with t2
         }
-        if (t1 > 0)
+        if (t1 > 0)//if only t1 is bigger than zero
             return List.of(new GeoPoint(this,(ray.getTargetPoint(t1))));
-        else
+        else//if only t2 is bigger than zero
             return List.of(new GeoPoint(this,(ray.getTargetPoint(t2))));
     }
 }

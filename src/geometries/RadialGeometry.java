@@ -31,8 +31,8 @@ public abstract class RadialGeometry extends Geometry
      * @param emissionLight emission light color
      */
     public RadialGeometry(Color emissionLight, double radius, Material material) {
-        super(emissionLight, material);
-        if (isZero(radius) || (radius < 0.0))
+        super(emissionLight, material);//calls geometry constructor to assign the emission light color and the material
+        if (isZero(radius) || (radius < 0.0))//makes sure that the radius isnt negative or zero
             throw new IllegalArgumentException("radius " + radius + " is not valid");
         this._radius = radius;
     }

@@ -8,10 +8,19 @@ import primitives.*;
  */
 public abstract class Geometry implements Intersectable
 {
-    public abstract Vector getNormal(Point3D p);
 
+    /**
+     * fields for abstract class Geometry - the emission color and the material
+     */
     protected Color _emission;
     Material _material;
+
+    /**
+     * get normal function
+     * @param p point3D
+     * @return the normal vector from the shape to the point3D the function received
+     */
+    public abstract Vector getNormal(Point3D p);
     /**
      * returns the emission color
      * @return emission color
@@ -47,7 +56,7 @@ public abstract class Geometry implements Intersectable
     }
 
     /**
-     * constructor for abstract geometry class
+     * constructor for abstract geometry class - with default material values
      * @param _emission emission color
      */
     public Geometry(Color _emission) {

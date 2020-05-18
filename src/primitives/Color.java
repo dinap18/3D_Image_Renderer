@@ -147,7 +147,7 @@ public class Color {
      * Scale the color by a scalar
      *
      * @param k scale factor
-     * @return new Color object which is the result of the operation
+     * @return new Color object which is the result of the scaling
      */
     public Color scale(double k) {
         if (k < 0)
@@ -161,11 +161,11 @@ public class Color {
     /**
      * Scale the color by (1 / reduction factor)
      * @param k reduction factor
-     * @return new Color object which is the result of the operation
+     * @return new Color object which is the result of the reducing
      */
     public Color reduce(double k) {
         if (k < 1)
-            throw new IllegalArgumentException("Can't scale a color by a by a number lower than 1");
+            throw new IllegalArgumentException("Can't scale a color by zero or a negative number");
         double r = _r / k;
         double g = _g / k;
         double b = _b / k;

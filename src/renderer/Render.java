@@ -19,7 +19,34 @@ import static primitives.Util.alignZero;
 public class Render {
     private final ImageWriter _imageWriter;
     private final Scene _scene;
+    /**
+     * constant double for moving rays for shadows , reflections,etc
+     */
+    private static final double DELTA = 0.1;
 
+    /**
+     * checks if a shape is shaded or not
+     * @param l - light direction from geopoint
+     * @param n - normal vector from geopoint
+     * @param gp - Geopoint
+     * @return true if the shape isnt shaded, else false
+     */
+    private boolean unshaded(LightSource light,Vector l, Vector n, Intersectable.GeoPoint gp)
+    {
+        Vector lightDirection = l.scale(-1); // from point to light source - scale direction with negative one
+        Vector delta ;
+        double dotResult=n.dotProduct(lightDirection);//normal vector dot product the light direction
+        if(dotResult>0)
+            delta=n.scale(DELTA);
+        else // if its negative we make it positive
+            delta=n.scale(-DELTA);
+        Point3D point = gp.point.add(delta);//adds the calculated delta to the geopoint
+        Ray lightRay = new Ray(point, lightDirection);//creates a new ray from the point and the light direction
+        List<Intersectable.GeoPoint> intersections = _scene.getGeometries().findIntersections(lightRay);
+        if( intersections == null) return true;//checks if there are intersections with the light sources
+       return false;
+    //return counter == 0;
+    }
    /* public Render(Scene _scene,ImageWriter _imageWriter) {
         this._scene = _scene;
         this._imageWriter=_imageWriter;
@@ -48,11 +75,10 @@ public class Render {
      * This function does not creating the picture file, but create the buffer pf pixels
      */
     public void renderImage() {
-        Camera camera = _scene.getCamera();
-        Intersectable geometries = _scene.getGeometries();
-        java.awt.Color background = _scene.getBackground().getColor();
-        AmbientLight ambientLight = _scene.getAmbientLight();
-        double distance = _scene.getDistance();
+        Camera camera = _scene.getCamera();//camera
+        Intersectable geometries = _scene.getGeometries();//geometries in the scene
+        java.awt.Color background = _scene.getBackground().getColor();//the background color
+        double distance = _scene.getDistance();//distance between view plane and camera
 
         int Nx = _imageWriter.getNx();
         int Ny = _imageWriter.getNy();
@@ -61,14 +87,16 @@ public class Render {
 
         for (int row = 0; row < Ny; row++) {
             for (int column = 0; column < Nx; column++) {
-                Ray ray = camera.constructRayThroughPixel(Nx, Ny, column, row, distance, width, height);
-                List<Intersectable.GeoPoint> intersectionPoints = geometries.findIntersections(ray);
-                if (intersectionPoints == null) {
+                Ray ray = camera.constructRayThroughPixel(Nx, Ny, column, row, distance, width, height);//makes a new camera ray
+                List<Intersectable.GeoPoint> intersectionPoints = geometries.findIntersections(ray);//checks geometries for intersections
+                if (intersectionPoints == null)//if there are no intersection points than that pixel is background
+                    {
                     _imageWriter.writePixel(column, row, background);
-                } else {
-                    Intersectable.GeoPoint closestPoint = getClosestPoint(intersectionPoints);
-                    java.awt.Color pixelColor = calcColor(closestPoint).getColor();
-                    _imageWriter.writePixel(column, row, pixelColor);
+                } else
+                    {
+                    Intersectable.GeoPoint closestPoint = getClosestPoint(intersectionPoints);//closest point for intersection points
+                    java.awt.Color pixelColor = calcColor(closestPoint).getColor();//calculates the closest points color
+                    _imageWriter.writePixel(column, row, pixelColor);//writes the closest point to the image
                 }
             }
         }
@@ -76,8 +104,7 @@ public class Render {
 
     /**
      * Finding the closest point to the P0 of the camera.
-     * @param  intersectionPoints list of points, the function should find from
-     * this list the closet point to P0 of the camera in the scene.
+     * @param  intersectionPoints list of points, the function should find from this list the closet point to P0 of the camera in the scene
      * @return  the closest point to the camera
      */
 
@@ -85,9 +112,10 @@ public class Render {
         Intersectable.GeoPoint result = null;
         double mindist = Double.MAX_VALUE;
 
-        Point3D p0 = this._scene.getCamera().get_p0();
+        Point3D p0 = this._scene.getCamera().get_p0();//camera starting point
 
-        for (Intersectable.GeoPoint geo : intersectionPoints) {
+        for (Intersectable.GeoPoint geo : intersectionPoints) //for each geopoint finds distance from camera starting point and checks if it is closer to the point we want than previous points
+        {
             Point3D pt = geo.getPoint();
             double distance = p0.distance(pt);
             if (distance < mindist) {
@@ -102,19 +130,25 @@ public class Render {
      * Printing the grid with a fixed interval between lines
      * @param interval The interval between the lines.
      */
-    public void printGrid(int interval,Color colorsep) {
+    public void printGrid(int interval,Color colorsep)
+    {
         double rows = this._imageWriter.getNx();
         double columns = _imageWriter.getNy();
-        //Writing the lines.
-        for (int col = 0; col < columns; col++) {
-            for (int row = 0; row < rows; row++) {
-                if (col % interval == 0 || row % interval == 0) {
-                    _imageWriter.writePixel(row, col, colorsep);
+        for (int col = 0; col < columns; col++)
+        {
+            for (int row = 0; row < rows; row++)
+            {
+                if (col % interval == 0 || row % interval == 0)//if grid line needs to be printed
+                {
+                    _imageWriter.writePixel(row, col, colorsep);//writes the color grid that we want in the needed place
                 }
             }
         }
     }
 
+    /**
+     * wrtie to image- calls image writer's write to image
+     */
     public void writeToImage() {
         _imageWriter.writeToImage();
     }
@@ -125,37 +159,32 @@ public class Render {
      * @return the color intensity
      */
     private primitives.Color calcColor(Intersectable.GeoPoint gp) {
-        primitives.Color result = _scene.getAmbientLight().getIntensity();
-        result = result.add(gp.getGeometry().get_emission());
-        List<LightSource> lights = _scene.getLightSources();
-
-        Vector v = gp.getPoint().subtract(_scene.getCamera().get_p0()).normalize();
-        Vector n = gp.getGeometry().getNormal(gp.getPoint());
-
-        Material material = gp.getGeometry().get_material();
-        int nShininess = material.getnShininess();
-        double kd = material.getKd();
-        double ks = material.getKs();
-        if (_scene.getLightSources() != null) {
-            for (LightSource lightSource : lights) {
-
-                Vector l = lightSource.getL(gp.getPoint());
-                double nl = alignZero(n.dotProduct(l));
-                double nv = alignZero(n.dotProduct(v));
-
-                if (sign(nl) == sign(nv)) {
-                    primitives.Color ip = lightSource.getIntensity(gp.getPoint());
-                    result = result.add(
-                            calcDiffusive(kd, nl, ip),
-                            calcSpecular(ks, l, n, nl, v, nShininess, ip)
-                    );
-                }
+        primitives.Color color = _scene.getAmbientLight().getIntensity();//the intensity of the scene's ambient light
+        color = color.add(gp.geometry.get_emission());//adds the geometries emission color to color
+        Vector v = gp.point.subtract(_scene.getCamera().get_p0()).normalize();//subtracts the camera starting point from the geopoint and normalizes the vector
+        Vector n = gp.geometry.getNormal(gp.getPoint());//gets normal vector from geopoint's point3D
+        int nShininess = gp.geometry.get_material().getnShininess();//the geopoint's shininess
+        double kd = gp.geometry.get_material().getKd();//geopoint diffuse
+        double ks = gp.geometry.get_material().getKs();//geopoint specular
+        for (LightSource lightSource : _scene.getLightSources())//for each light source in the scene's light sources
+        {
+            Vector l = lightSource.getL(gp.point);//the lights direction from geopoint
+            if (n.dotProduct(l)*n.dotProduct(v) > 0)//if the dot proudct between the normal and the light direction times the dot product btween the normal and the normal vector between the camera and geopoint
+                if (unshaded(lightSource,l, n, gp))//if the geopoint isnt shaded by the light
+            {
+                primitives.Color lightIntensity = lightSource.getIntensity(gp.point);//intensity color of the geopoint
+                color = color.add(calcDiffusive(kd,l.dotProduct(n), lightIntensity),
+                        calcSpecular(ks,l,n, l.dotProduct(n), v, nShininess, lightIntensity));//adds the specular and diffuse lights to the color
             }
         }
-
-        return result;
+        return color;
     }
 
+    /**
+     * checks if a value is positive
+     * @param val - double
+     * @return true if number is positive, else negative
+     */
     private boolean sign(double val) {
         return (val > 0d);
     }
@@ -172,34 +201,33 @@ public class Render {
      * @param ip         light intensity
      * @return specular component light effect
      */
-    private primitives.Color calcSpecular(double ks, Vector l, Vector n, double nl, Vector v, int nShininess, primitives.Color ip) {
-        double p = nShininess;
-
-        Vector R = l.add(n.scale(-2 * nl)); // nl must not be zero!
-        double minusVR = -alignZero(R.dotProduct(v));
-        if (minusVR <= 0) {
+    private primitives.Color calcSpecular(double ks, Vector l, Vector n, double nl, Vector v, int nShininess, primitives.Color ip)
+    {
+        Vector R = l.add(n.scale(-2 * nl)); // nl cannot be zero
+        double dotResult=R.dotProduct(v);
+        double minusVR = -alignZero(dotResult);
+        if (minusVR <= 0)
+        {
             return primitives.Color.BLACK; // view from direction opposite to r vector
         }
-        return ip.scale(ks * Math.pow(minusVR, p));
+        primitives.Color scaled=ip.scale(ks * Math.pow(minusVR, nShininess));//scales the light intensity with the specular component times minusVR to the power of nShininess
+        return scaled;
     }
 
     /**
      * Calculate Diffusive component of light reflection.
      *
-     * @param kd diffusive component coef
+     * @param kd diffusive component
      * @param nl dot-product n*l
      * @param ip light intensity at the point
      * @return diffusive component of light reflection
-     * @author Dan Zilberstein
-     * <p>
-     * The diffuse component is that dot product n•L that we discussed in class. It approximates light, originally
-     * from light source L, reflecting from a surface which is diffuse, or non-glossy. One example of a non-glossy
-     * surface is paper. In general, you'll also want this to have a non-gray color value, so this term would in general
-     * be a color defined as: [rd,gd,bd](n•L)
      */
-    private primitives.Color calcDiffusive(double kd, double nl, primitives.Color ip) {
-        if (nl < 0) nl = -nl;
-        return ip.scale(nl * kd);
+    private primitives.Color calcDiffusive(double kd, double nl, primitives.Color ip)
+    {
+        if (nl < 0) //if nl is negative we make it positive
+            nl = Math.abs(nl);
+        primitives.Color scaled=ip.scale(nl * kd);//scales nl with the diffuse component
+        return scaled;
     }
 
 }

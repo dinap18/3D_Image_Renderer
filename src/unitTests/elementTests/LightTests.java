@@ -8,7 +8,7 @@ import renderer.*;
 import scene.Scene;
 
 /**
- * Test rendering abasic image
+ * Test rendering a basic image
  *
  * @author Dan
  */

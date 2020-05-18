@@ -16,13 +16,13 @@ public class AmbientLight extends Light {
     }
 
     /**
-     * constructor for ambient light class -calls light constructor
+     * constructor for ambient light class
      * @param intensity color intensity
      * @param kA
      */
     public AmbientLight(Color intensity,double kA) {
 
-        _intensity=(intensity.scale(kA));
+        _intensity=(intensity.scale(kA));//scales the color intensity with kA
     }
 
 

@@ -8,6 +8,11 @@ import java.util.Objects;
  *  interface that contains list of intersection points
  */
 public interface Intersectable {
+    /**
+     * find intersection function
+     * @param ray Ray
+     * @return list of geoPoint intersections between a shape and a ray
+     */
     List<GeoPoint> findIntersections(Ray ray);
 
     /**

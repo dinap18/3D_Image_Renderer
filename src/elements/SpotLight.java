@@ -24,7 +24,7 @@ public class SpotLight extends PointLight  {
     }
 
     /**
-     *  Constructor of spot light class
+     *  Constructor of spot light class with default concentration
      * @param colorIntensity the color intensity
      * @param position the position - point3D
      * @param direction the director direction
@@ -44,19 +44,26 @@ public class SpotLight extends PointLight  {
      */
     @Override
     public Color getIntensity(Point3D p) {
-        double projection = _direction.dotProduct(getL(p));
+        double projection = _direction.dotProduct(getL(p));//dot product between the direction vector and the direction from point p
 
-        if (Util.isZero(projection)) {
+        if (Util.isZero(projection)) // if the projection distance is zero8
+        {
             return Color.BLACK;
         }
-        double factor = Math.max(0, projection);
-        Color pointlightIntensity = super.getIntensity(p);
+        double factor = Math.max(0, projection);//the factor is zero if the projection is zero , else it is the projection value(double)
+        Color pointlightIntensity = super.getIntensity(p);//the intensity of Point3D p
 
-        if (_concentration != 1) {
-            factor = Math.pow(factor, _concentration);
+        if (_concentration != 1)
+        {
+            factor = Math.pow(factor, _concentration);//if the concentration isnt 1 we put the factor to the power of concentration
         }
 
-        return (pointlightIntensity.scale(factor));
+        return (pointlightIntensity.scale(factor));//returns the intensity scaled by the projection factor
+    }
+
+    @Override
+    public double getDistance(Point3D point) {
+        return super.getDistance(point);
     }
 }
 

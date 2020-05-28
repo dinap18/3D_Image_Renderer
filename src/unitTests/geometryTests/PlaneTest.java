@@ -37,7 +37,7 @@ class PlaneTest {
         assertEquals(p.findIntersections(r),null);
         //EP intersects plane
         Ray e= new Ray(new Point3D(4,2,0),new Vector(-10,-2,6));
-        assertEquals(p.findIntersections(e).get(0),new Point3D(-6,0,6));
+        assertEquals(p.findIntersections(e).get(0).getPoint(),new Point3D(-6,0,6));
 
         // =============== Boundary Values Tests ==================
 

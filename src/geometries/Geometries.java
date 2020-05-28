@@ -47,15 +47,16 @@ public class Geometries implements Intersectable {
     /**
      * finds intersections between a list of geometries and a ray
      * @param ray - to find intersections with
+     * @param max - double number- max difference between two points
      * @return list of intersection points from  a list of geometries and a ray
      */
     @Override
-    public List<GeoPoint> findIntersections(Ray ray) {
+    public List<GeoPoint> findIntersections(Ray ray,double max) {
         List<GeoPoint> intersections = new LinkedList<GeoPoint>();
 
         for (Intersectable geo : _geometries) //finds the intersection points for each geometry and adds them to the list of geopoints to be returned
         {
-            List<GeoPoint> tempIntersections = geo.findIntersections(ray);
+            List<GeoPoint> tempIntersections = geo.findIntersections(ray,max);
             if (tempIntersections != null) //if intersection points were found we need to add them to the list
             {
                 intersections.addAll(tempIntersections);

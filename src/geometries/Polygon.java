@@ -13,7 +13,7 @@ import static primitives.Util.*;
  *
  * @author Dan
  */
-public class Polygon extends FlatGeometry {
+public class Polygon extends Geometry {
     /**
      * List of polygon's vertices
      */
@@ -100,7 +100,6 @@ public class Polygon extends FlatGeometry {
      */
     public Polygon(Point3D... vertices) {
         this(Color.BLACK, new Material(0, 0, 0), vertices);
-//        this(new Color(java.awt.Color.RED),new Material(0,0,0),vertices);
     }
     @Override
     public Vector getNormal(Point3D point) {
@@ -109,12 +108,13 @@ public class Polygon extends FlatGeometry {
 
     /**
      * finds intersections between a ray and a polygon
-     * @param ray
+     * @param ray the ray we are looking for intersection points with
+     * @param max max distance(double)
      * @return list of Point3Ds that intersect with the polygon
      */
     @Override
-    public List<GeoPoint> findIntersections(Ray ray) {
-        List<GeoPoint> planeIntersections = _plane.findIntersections(ray);
+    public List<GeoPoint> findIntersections(Ray ray,double max) {
+        List<GeoPoint> planeIntersections = _plane.findIntersections(ray,max);
         if (planeIntersections == null)//if there are no intersections with the plane there wont be any with the polygon
             return null;
 

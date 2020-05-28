@@ -1,7 +1,9 @@
 
 package primitives;
 
-   /**
+import java.security.cert.PolicyNode;
+
+/**
          *Class Ray
         
          */
@@ -10,6 +12,7 @@ public class Ray
        /**
          *Fields (point3D,Vector)
          */
+       private static double DELTA=0.1;
     private final Point3D _p0;
     private final Vector _dir;
        /**
@@ -21,6 +24,24 @@ public class Ray
         this._p0 = new Point3D(p0);
         this._dir = new Vector(dir).normalized();
 
+    }
+
+    /**
+     * creates a new ray using 3 parameters
+     * @param p point3D starting point of ray
+     * @param dir vector - direction of ray
+     * @param n vector - normal to ray
+     */
+    public Ray(Point3D p, Vector dir,Vector n)
+    {
+        _dir=new Vector(dir).normalized();//normalizes the direction
+        double dotProdNormal=n.dotProduct(dir);//n vector dot product the normalized direction vector
+        Vector nDelta;
+        if(dotProdNormal>0)//if positive
+            nDelta=n.scale(DELTA);
+        else//we make it positive
+            nDelta=n.scale(-DELTA);
+    _p0=p.add(nDelta);//adds ndelta to the starting point
     }
        /**
          *Copy constructor of Ray

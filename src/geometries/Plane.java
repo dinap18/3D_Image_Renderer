@@ -14,7 +14,7 @@ import static primitives.Util.isZero;
 /**
  * Class Plane implements the geometry interface
  */
-public class Plane extends FlatGeometry
+public class Plane extends Geometry
 {
     /**
      *fields of class Plane
@@ -117,11 +117,12 @@ public class Plane extends FlatGeometry
 
     /**
      * finds intersections between a ray and a plane
-     * @param ray
+     * @param ray the ray we are looking for intersections with
+     * @param max - max distance (number)
      * @return list of Point3Ds that intersect with the plane
      */
     @Override
-    public List<GeoPoint> findIntersections(Ray ray) {
+    public List<geometries.Intersectable.GeoPoint> findIntersections(Ray ray,double max) {
         Vector v;
         try {
             v= _p.subtract(ray.get_p0());
@@ -134,9 +135,10 @@ public class Plane extends FlatGeometry
             return null;
 
         double t = alignZero(_normal.dotProduct(v) / nv);
-         if(t<=0)//there are no intersections
+        double distance=alignZero(max-t);
+             if(t<=0||distance<=0)//there are no intersections or the distance isnt positive
              return null;
-        GeoPoint geo = new GeoPoint(this, ray.getTargetPoint(t));
+        Intersectable.GeoPoint geo = new Intersectable.GeoPoint(this, ray.getTargetPoint(t));
         return List.of(geo);//returns list of geopoint intersections
     }
 }

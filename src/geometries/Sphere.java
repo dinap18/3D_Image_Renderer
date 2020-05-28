@@ -86,10 +86,11 @@ public class Sphere extends RadialGeometry
     /**
      * finds intersections between a ray and a sphere
      * @param ray - to check if it intersects with the sphere
+    * @param max - max distance (double)
      * @return the intersection point3Ds
      */
     @Override
-    public  List<GeoPoint> findIntersections(Ray ray) {
+    public  List<GeoPoint> findIntersections(Ray ray,double max) {
         Point3D p0 = ray.get_p0();//beginning point of ray
         Vector v = ray.get_dir();//direction of ray
         Vector u;
@@ -117,17 +118,22 @@ public class Sphere extends RadialGeometry
 
         double t1 = alignZero(tm - th);
         double t2 = alignZero(tm + th);
+        double distance1=alignZero(max-t1);
+        double distance2=alignZero(max-t2);
         if (t1 <= 0 && t2 <= 0)//if they are both smaller of equal to zero there are no intersection points
             return null;
-        if (t1 > 0 && t2 > 0)//if they are both bigger than zero
+        if(v.get_head()==Point3D.ZERO)
+            return null;
+        if (t1 > 0 && t2 > 0 && distance1>0 &&distance2>0 && ray.get_dir().get_head()!=Point3D.ZERO)//if they are both bigger than zero and the distance is positive
         {
             return List.of(
                     new GeoPoint(this,(ray.getTargetPoint(t1)))//the target point with t1
                     ,new GeoPoint(this,(ray.getTargetPoint(t2))));//the target point with t2
         }
-        if (t1 > 0)//if only t1 is bigger than zero
+        if (t1 > 0 && distance1>0)//if only t1 is bigger than zero and the distance is positive
             return List.of(new GeoPoint(this,(ray.getTargetPoint(t1))));
-        else//if only t2 is bigger than zero
+        else if(t2>0 &&distance2>0)//if t2 is positive and the distance is positive
             return List.of(new GeoPoint(this,(ray.getTargetPoint(t2))));
+        return null;//no intersection points
     }
 }

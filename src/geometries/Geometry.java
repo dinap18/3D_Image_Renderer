@@ -13,7 +13,7 @@ public abstract class Geometry implements Intersectable
      * fields for abstract class Geometry - the emission color and the material
      */
     protected Color _emission;
-    Material _material;
+    protected Material _material;
 
     /**
      * get normal function
@@ -25,7 +25,7 @@ public abstract class Geometry implements Intersectable
      * returns the emission color
      * @return emission color
      */
-    public Color get_emission() {
+    public primitives.Color get_emission() {
         return _emission;
     }
 
@@ -39,12 +39,12 @@ public abstract class Geometry implements Intersectable
 
     /**
      * 2 parameter constructor for class geometry
-     * @param _emission
-     * @param _material
+     * @param _emission shape's emission color
+     * @param _material shape's material
      */
     public Geometry(Color _emission, Material _material) {
-        this._emission = _emission;
-        this._material = _material;
+        this._emission = new Color(_emission);
+        this._material = new Material(_material);
     }
 
     /**

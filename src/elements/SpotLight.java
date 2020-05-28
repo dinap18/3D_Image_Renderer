@@ -61,9 +61,5 @@ public class SpotLight extends PointLight  {
         return (pointlightIntensity.scale(factor));//returns the intensity scaled by the projection factor
     }
 
-    @Override
-    public double getDistance(Point3D point) {
-        return super.getDistance(point);
-    }
 }
 

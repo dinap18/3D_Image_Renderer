@@ -41,7 +41,7 @@ class TriangleTest {
         Triangle t=new Triangle(a,b,c);
         Point3D d=new Point3D(0.3441906873614191,3.1000665188470062,1.998824833702882);
         Ray r=new Ray(new Point3D(1.66,0.82,0),new Vector(new Point3D(-1.31,2.27,1.99)));
-        assertEquals(t.findIntersections(r).get(0),(d));
+        assertEquals(t.findIntersections(r).get(0).getPoint(),d);
         //Ep test outside against edge
         Ray f= new Ray(new Point3D(-0.61,0.07,-3.16),new Vector(-2.41,3.47,4.76));
         assertEquals(t.findIntersections(f),null);

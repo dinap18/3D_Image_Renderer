@@ -76,11 +76,10 @@ public class Tube extends RadialGeometry
     /**
      * finds the intersection points between a ray and a tube
      * @param ray
-     * @param max - distance(double)
      * @return list of intersection points
      */
     @Override
-    public List<GeoPoint> findIntersections(Ray ray,double max) {
+    public List<GeoPoint> findIntersections(Ray ray) {
         return null;
     }
 }

@@ -40,4 +40,16 @@ public abstract class Util {
     public static double alignZero(double number) {
         return getExp(number) < ACCURACY ? 0.0 : number;
     }
+
+    /**
+     * generates a random number to help generate rays for ray tracing
+     * @param min the minimum number
+     * @param max the maximum number
+     * @return the random number that we generated
+     */
+    public static double randomNumber(double min, double max)
+    {
+      double  random=Math.random() *(max-min) +min;
+      return random;
+    }
 }

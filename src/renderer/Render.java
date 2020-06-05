@@ -8,8 +8,8 @@ import primitives.*;
 import scene.Scene;
 
 import java.awt.Color;
+import java.util.LinkedList;
 import java.util.List;
-
 import static primitives.Util.alignZero;
 
 /**
@@ -25,8 +25,180 @@ public class Render {
     /**
      * constants for the base case of recursion
      */
-    private static final int MAX_CALC_COLOR_LEVEL = 10;
-    private static final double MIN_CALC_COLOR_K = 0.001;
+    private static final int MAX_CALC_COLOR_LEVEL = 5;
+    private static final double MIN_CALC_COLOR_K = 0.00001;
+    /**
+     * parameters for ray tracing- glossy surface and diffuse glass - they are in class render because this class takes care of ray tracing
+     */
+    private int _numOfRays;
+    private double _radius;
+    private double _rayDistance;
+    /**
+     * parameters for threading
+     */
+    private int _threads = 1;
+    private final int _spareThreads = 2;
+    private boolean print = false;
+
+    /**
+     * set threads function
+     * @param threads number of threads
+     * @return Render
+     */
+    public Render set_threads(int threads) {
+        if (threads < 0)
+            throw new IllegalArgumentException("threading parameter cant be nagative");
+
+        if (threads == 0) {
+            int cores = Runtime.getRuntime().availableProcessors() - _spareThreads;
+            if (cores <= 2)
+                _threads = 1;
+            else
+                _threads = cores;
+        } else
+            _threads = threads;
+        return this;
+    }
+
+    /**
+     * set print
+     * @return Render
+     */
+    public Render setPrint() {
+        this.print = true;
+        return this;
+    }
+
+    /**
+     * gets the distance we want between the ray point and the circle
+     *
+     * @return double - distance
+     */
+    public double get_rayDistance() {
+        return _rayDistance;
+    }
+
+    /**
+     * sets the distance between the ray point and the circle
+     *
+     * @param _rayDistance
+     */
+    public void set_rayDistance(double _rayDistance) {
+        if (_rayDistance < 0)
+            throw new IllegalArgumentException("distance cant be negative");
+        this._rayDistance = _rayDistance;
+    }
+
+    /**
+     * get number of rays function
+     *
+     * @return number of rays that will be part of the beam
+     */
+    public int get_numOfRays() {
+        return _numOfRays;
+    }
+
+    /**
+     * sets the number of rays that will be part of the beam
+     *
+     * @param _numOfRays int - amount of rays that will be part of the beam
+     */
+    public void set_numOfRays(int _numOfRays) {
+        if (_numOfRays < 1)
+            throw new IllegalArgumentException("there has to be at least one ray");
+        this._numOfRays = _numOfRays;
+    }
+
+    /**
+     * returns the size of the radius
+     *
+     * @return double - Radius
+     */
+    public double getRadius() {
+        return _radius;
+    }
+
+    /**
+     * sete the value or the radius for the circle to create a beam
+     *
+     * @param radius double - the radius of the circle we are using to create a beam
+     */
+    public void setRadius(double radius) {
+        if (radius < 0)
+            throw new IllegalArgumentException("radius can't be negative");
+        this._radius = radius;
+    }
+
+    /**
+     * private class pixel- needed for threading
+     */
+    private class Pixel {
+        private long _maxRows = 0;
+        private long _maxCols = 0;
+        private long _pixels = 0;
+        public volatile int row = 0;
+        public volatile int col = -1;
+        private long _counter = 0;
+        private int _percents = 0;
+        private long _nextCounter = 0;
+
+        /**
+         * gets the next pixel and updates percentage done
+         * @param target the target pixel
+         * @return 0 if successful 1 if not
+         */
+        private synchronized int nextP(Pixel target) {
+            ++col;
+            ++_counter;
+            if (col < _maxCols) {
+                target.row = this.row;
+                target.col = this.col;
+                if (_counter == _nextCounter) {
+                    ++_percents;
+                    _nextCounter = _pixels * (_percents + 1) / 100;
+                    return _percents;
+                }
+                return 0;
+            }
+            ++row;
+            if (row < _maxRows) {
+                col = 0;
+                if (_counter == _nextCounter) {
+                    ++_percents;
+                    _nextCounter = _pixels * (_percents + 1) / 100;
+                    return _percents;
+                }
+                return 0;
+            }
+            return -1;
+        }
+
+        /**
+         * Public function for getting next pixel number into secondary Pixel object.
+         * The function prints also progress percentage in the console window.
+         *
+         * @param target target secondary Pixel object to copy the row/column of the next pixel
+         * @return true if the work still in progress, -1 if it's done
+         */
+        public boolean nextPixel(Pixel target) {
+            int percents = nextP(target);
+            if (percents > 0)
+                if (Render.this.print) System.out.printf("\r %02d%%", percents);
+            if (percents >= 0)
+                return true;
+            if (Render.this.print) System.out.printf("\r %02d%%", 100);
+            return false;
+        }
+        public Pixel(int maxRows, int maxCols) {
+            _maxRows = maxRows;
+            _maxCols = maxCols;
+            _pixels = maxRows * maxCols;
+            _nextCounter = _pixels / 100;
+            if (Render.this.print) System.out.printf("\r %02d%%", _percents);
+        }
+        public Pixel(){};
+    }
+
 
     /**
      * checks if a shape is shaded or not
@@ -70,14 +242,9 @@ public class Render {
      */
   private Ray constructReflectedRay(Vector n, Point3D p, Ray in)
   {
-    Vector v=in.get_dir();//direction of in ray
-      double vDotN=v.dotProduct(n);//v dot product n
-      if(vDotN==0)
-          return null;//there is no reflection
-      Vector w=n.scale(2*vDotN);//scales n with twice the value of the dot product result
-      Vector r=v.subtract(w);//subtracts w from v
-      Ray output=new Ray(p,r,n);//creates a new ray with the result
-      return output;
+
+      Vector r= in.get_dir().subtract(n.scale(((in.get_dir().dotProduct(n))*2)));
+      return new Ray(p,r,n);
   }
 
     /**
@@ -88,8 +255,8 @@ public class Render {
      */
     private Ray constructRefractedRay(Point3D p, Ray in,Vector n)
 {
-    Ray r= new Ray(p,in.get_dir(),n);
-    return r;
+
+    return new Ray(p,in.get_dir(),n);
 }
     /**
      * constructor for class render
@@ -139,6 +306,8 @@ public class Render {
         return _scene;
     }
 
+
+
     /**
      * Filling the buffer according to the geometries that are in the scene.
      * This function does not creating the picture file, but create the buffer pf pixels
@@ -153,23 +322,35 @@ public class Render {
         int Ny = _imageWriter.getNy();
         double width = _imageWriter.getWidth();
         double height = _imageWriter.getHeight();
+        final Pixel thePixel=new Pixel(Ny,Nx);
+        Thread[] threads = new Thread[this._threads];
+        for (int i = _threads - 1; i >= 0; --i)
+        {
 
-        for (int row = 0; row < Ny; row++) {
-            for (int column = 0; column < Nx; column++) {
-                Ray ray = camera.constructRayThroughPixel(Nx, Ny, column, row, distance, width, height);//makes a new camera ray
-                Intersectable.GeoPoint closest= findClosestIntersection(ray);//finds the closest point to the ray's p0
-                if (closest == null)//if there are no intersection points than that pixel is background
-                     {
+                    threads[i] = new Thread(()->{
+                        Pixel pixel=new Pixel();
+                        while(thePixel.nextPixel(pixel)) {
+                            Ray ray = camera.constructRayThroughPixel(Nx, Ny, pixel.col, pixel.row, distance, width, height);//makes a new camera ray
+                            Intersectable.GeoPoint closest = findClosestIntersection(ray);//finds the closest point to the ray's p0
+                            if (closest == null)//if there are no intersection points than that pixel is background
+                            {
 
-                    _imageWriter.writePixel(column, row, background);
-                     }
-                else
-                    {
-                    java.awt.Color pixelColor = calcColor(closest,ray).getColor();//calculates the closest point's color
-                    _imageWriter.writePixel(column, row, pixelColor);//writes the closest point to the image we are creating
-                    }
-            }
+                                _imageWriter.writePixel(pixel.col, pixel.row, background);
+                            } else {
+                                java.awt.Color pixelColor = calcColor(closest, ray).getColor();//calculates the closest point's color
+                                _imageWriter.writePixel(pixel.col, pixel.row, pixelColor);//writes the closest point to the image we are creating
+                            }
+                        }
+                    });
+
+
+
         }
+        for (Thread thread : threads) thread.start();
+
+        // Wait for all threads to finish
+        for (Thread thread : threads) try { thread.join(); } catch (Exception e) {}
+        if (print) System.out.printf("\r100%%\n");
     }
 
     /**
@@ -180,16 +361,14 @@ public class Render {
 
     private Intersectable.GeoPoint getClosestPoint(List<Intersectable.GeoPoint> intersectionPoints) {
         Intersectable.GeoPoint result = null;
-        double mindist = Double.MAX_VALUE;
-
-        Point3D p0 = this._scene.getCamera().get_p0();//camera starting point
+        double smallestDistance = Double.MAX_VALUE;
 
         for (Intersectable.GeoPoint geo : intersectionPoints) //for each geopoint finds distance from camera starting point and checks if it is closer to the point we want than previous points
         {
             Point3D pt = geo.getPoint();
-            double distance = p0.distance(pt);
-            if (distance < mindist) {
-                mindist = distance;
+            double distance = this._scene.getCamera().get_p0().distance(pt);
+            if (distance < smallestDistance) {
+                smallestDistance = distance;
                 result = geo;
             }
         }
@@ -248,8 +427,8 @@ public class Render {
             return primitives.Color.BLACK;
         primitives.Color color = gp.getGeometry().get_emission();//the geometries emssion light
         Vector v = gp.point.subtract(_scene.getCamera().get_p0()).normalize();//subtracts the camera starting point from the geopoint and normalizes the vector
-        Vector n = gp.geometry.getNormal(gp.getPoint());//gets normal vector from geopoint's point3D
-        double nDotV =alignZero( n.dotProduct(v));//n dot product v
+
+        double nDotV =alignZero(  gp.geometry.getNormal(gp.getPoint()).dotProduct(v));//n dot product v
         if (nDotV == 0) {
             return color;
         }
@@ -262,40 +441,60 @@ public class Render {
         for (LightSource lightSource : _scene.getLightSources())//for each light source in the scene's light sources
         {
             Vector l = lightSource.getL(gp.point);//the lights direction from geopoint
-            if (alignZero(n.dotProduct(l)) * alignZero(n.dotProduct(v)) > 0)//if the dot proudct between the normal and the light direction times the dot product btween the normal and the normal vector between the camera and geopoint
+            if (alignZero( gp.geometry.getNormal(gp.getPoint()).dotProduct(l)) * alignZero( gp.geometry.getNormal(gp.getPoint()).dotProduct(v)) > 0)//if the dot proudct between the normal and the light direction times the dot product btween the normal and the normal vector between the camera and geopoint
             {
                 //   if (unshaded(lightSource, l, n, gp))//if the geopoint isnt shaded by the light
-                transparencyAmount = transparency(lightSource, l, n, gp);
+                transparencyAmount = transparency(lightSource, l,  gp.geometry.getNormal(gp.getPoint()), gp);
                 if (transparencyAmount * k > MIN_CALC_COLOR_K) {
                     primitives.Color lightIntensity = lightSource.getIntensity(gp.point).scale(transparencyAmount);//intensity color of the geopoint
-                    color = color.add(calcDiffusive(kd, l.dotProduct(n), lightIntensity),
-                            calcSpecular(ks, l, n, l.dotProduct(n), v, nShininess, lightIntensity))
+                    color = color.add(calcDiffusive(kd, l.dotProduct( gp.geometry.getNormal(gp.getPoint())), lightIntensity),
+                            calcSpecular(ks, l,  gp.geometry.getNormal(gp.getPoint()), l.dotProduct( gp.geometry.getNormal(gp.getPoint())), v, nShininess, lightIntensity))
                     ;//adds the specular and diffuse lights to the color
                 }
             }
         }
+
         if (kr > MIN_CALC_COLOR_K)//if the reflection is bigger than the minimum of calc color
         {
-            Ray reflection = constructReflectedRay(n, gp.getPoint(), in);//constructs a reflected ray
-            Intersectable.GeoPoint reflectedGp = findClosestIntersection(reflection);//find the closest point to the reflection ray's p0
-            if (reflectedGp != null)//if such a point exists
-            {
-                color = color.add(calcColor(reflectedGp, reflection, level - 1, kr).scale(kr));//calls the recursion th find the rest of the color and then scales it with the reflection
-            }
+            List<Ray>beam=new LinkedList<>();
+            if(this._numOfRays==0 ||this._radius<0||this._rayDistance<0)
+                beam.add(in);
+            else
+                beam=  in.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this.getRadius(),this._scene.getDistance(),this.get_numOfRays());
+          for(Ray r :beam)
+          {
+              Ray reflection= constructReflectedRay(gp.getGeometry().getNormal(gp.getPoint()), gp.getPoint(), r);
+              Intersectable.GeoPoint reflectedGp = findClosestIntersection(reflection);//find the closest point to the reflection ray's p0
+              if (reflectedGp != null)//if such a point exists
+              {
+                  color = color.add(calcColor(reflectedGp, reflection, level - 1, kr).scale(kr));//calls the recursion th find the rest of the color and then scales it with the reflection
+              }
+          }
+
+
         }
+
         if (kt > MIN_CALC_COLOR_K)//if the refraction is bigger than the minimum of calc color
         {
-            Ray refraction = constructRefractedRay(gp.getPoint(), in,n);//constructs a refracted ray
-            Intersectable.GeoPoint refractedGp = findClosestIntersection(refraction);//find the closest point to the refracted ray's p0
-            if (refractedGp != null)//if such a point exists
-            {
-                color = color.add(calcColor(refractedGp, refraction, level - 1, kt).scale(kt));//calls the recursion th find the rest of the color and then scales it with the refracted
+            List<Ray>beam=new LinkedList<>();
+            if(this._numOfRays==0 ||this._radius<0||this._rayDistance<0)
+                beam.add(in);
+            else
+                beam=  in.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this.getRadius(),this._scene.getDistance(),this.get_numOfRays());
+
+            for(Ray r :beam) {
+                Ray refraction = constructRefractedRay(gp.getPoint(), r, gp.getGeometry().getNormal(gp.getPoint()));//constructs a refracted ray
+                Intersectable.GeoPoint refractedGp = findClosestIntersection(refraction);//find the closest point to the refracted ray's p0
+                if (refractedGp != null)//if such a point exists
+                {
+                    color = color.add(calcColor(refractedGp, refraction, level - 1, kt).scale(kt));//calls the recursion th find the rest of the color and then scales it with the refracted
+                }
             }
         }
         return color;
     }
     /**
-     * calculates transparency
+     * calculates transparency - featured in course slideshow
      * @param light - light source
      * @param l Vector
      * @param n Vector
@@ -338,11 +537,11 @@ public class Render {
      * @param ks         specular component
      * @param l          direction from light
      * @param n          normal to surface
-     * @param nl         dot-product n*l
+     * @param nl         dot product n*l
      * @param v          direction from point of view
      * @param nShininess shininess level
      * @param ip         light intensity
-     * @return specular component light effect
+     * @return specular light color
      */
     private primitives.Color calcSpecular(double ks, Vector l, Vector n, double nl, Vector v, int nShininess, primitives.Color ip)
     {

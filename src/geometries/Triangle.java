@@ -49,12 +49,11 @@ public class Triangle extends Polygon {
     /**
      * finds intersections between a ray and a triangle
      * @param ray -the ray that we are checking to see if it intersects with the triangle
-     * @param max - max distance(double)
-     *  @return list of Point3Ds that intersect with the triangle
+     * @return list of Point3Ds that intersect with the triangle
      */
     @Override
-    public List<GeoPoint> findIntersections(Ray ray,double max) {
-        List<GeoPoint> planeIntersections = _plane.findIntersections(ray,max);//finds the intersections with the plane
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> planeIntersections = _plane.findIntersections(ray);//finds the intersections with the plane
         if (planeIntersections == null) //if there are no intersections with the plane then there is no intersection with the triangle
             return null;
 

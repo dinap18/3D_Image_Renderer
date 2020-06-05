@@ -69,4 +69,7 @@ public final class Main {
         out.println("If there were no any other outputs - all tests succeeded!");
 
     }
+
+
+
 }

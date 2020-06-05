@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class ImageWriterTests {
     @Test
-    void writeToImage() {
+    void gridTest() {
         ImageWriter imageWriter = new ImageWriter("first test", 1600, 1000, 800, 500);
         int Nx = imageWriter.getNx();
         int Ny = imageWriter.getNy();

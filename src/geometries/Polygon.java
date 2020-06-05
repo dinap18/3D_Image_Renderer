@@ -109,12 +109,11 @@ public class Polygon extends Geometry {
     /**
      * finds intersections between a ray and a polygon
      * @param ray the ray we are looking for intersection points with
-     * @param max max distance(double)
      * @return list of Point3Ds that intersect with the polygon
      */
     @Override
-    public List<GeoPoint> findIntersections(Ray ray,double max) {
-        List<GeoPoint> planeIntersections = _plane.findIntersections(ray,max);
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> planeIntersections = _plane.findIntersections(ray);
         if (planeIntersections == null)//if there are no intersections with the plane there wont be any with the polygon
             return null;
 

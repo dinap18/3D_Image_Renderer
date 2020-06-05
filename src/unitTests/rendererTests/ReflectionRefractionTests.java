@@ -113,10 +113,10 @@ public class ReflectionRefractionTests {
    scene.addGeometries( new Triangle(Color.BLACK, new Material(0.5, 0.5, 60), //
                   new Point3D(-150, 150, 115), new Point3D(150, 150, 135), new Point3D(75, -75, 150)),
         new Sphere(new Color(255,255,102),
-                   new Material(0.25,0.25,20,0,0.7),16,new Point3D(-80,-79,-70)),
+                   new Material(0.25,0.25,20,0.9,0),16,new Point3D(-80,-79,-70)),
            new Sphere(new Color(204, 0, 201),
                    new Material(0.25, 0.25, 20,0.9,0), 50, new Point3D(95, 90, -100)),   new Sphere(new Color(102, 0, 204),
-                   new Material(0.25, 0.25, 20,0,0.4), 40, new Point3D(-95, 90, 100)));
+                   new Material(0.25, 0.25, 20,0,0.6), 40, new Point3D(-95, 90, 100)));
  scene.addLights(new SpotLight(new Color(500, 300, 300), //
            new Point3D(60, -50, 0), new Vector(0, 0, 1), 1, 4E-5, 2E-7),
             (new DirectionalLight(new Color(255, 255, 104), new Vector(1, -1, 2))),new PointLight(new Color(500, 250, 250),

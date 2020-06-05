@@ -43,6 +43,7 @@ public class Scene {
 
     }
 
+
     /**
      * get ambient light function
      * @return the scene's ambient light
@@ -158,7 +159,6 @@ public class Scene {
         private  Camera _camera;
         private  double _distance;
         private  AmbientLight _ambientLight;
-
         /**
          * constructor
          * @param _name the scene's name

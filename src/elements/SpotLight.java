@@ -4,6 +4,9 @@ import primitives.*;
  * spot light class that extends point light class
  */
 public class SpotLight extends PointLight  {
+    /**
+     * fields for spot light
+     */
     Vector _direction;
     double _concentration;
 

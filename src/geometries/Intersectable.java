@@ -8,23 +8,14 @@ import java.util.Objects;
  *  interface that contains list of intersection points
  */
 public interface Intersectable {
-    /**
-     * find intersection function
-     * @param ray Ray
-     * @return list of geoPoint intersections between a shape and a ray
-     */
-    default List<GeoPoint> findIntersections(Ray ray)
-    {
-        return findIntersections(ray,Double.POSITIVE_INFINITY);
-    }
+
 
     /**
      *  find intersection function
       * @param ray Ray
-     * @param max distance (double)
      * @return list of geoPoint intersections between a shape and a ray
      */
-    List<GeoPoint>findIntersections(Ray ray, double max);
+    List<GeoPoint>findIntersections(Ray ray);
     /**
      * static helper class geoPoint
      */

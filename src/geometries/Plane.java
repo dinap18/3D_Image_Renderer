@@ -50,12 +50,25 @@ public class Plane extends Geometry
      * @param _normal-vector
      */
     public Plane(Point3D _p, Vector _normal) {
-        super(Color.BLACK, new Material(0, 0, 0));//calls flat geometry to assign black as emission color and the material
+        super(Color.BLACK, new Material(0, 0, 0));//calls  geometry to assign black as emission color and the material
 
         this._p = _p;
         this._normal = _normal;
     }
 
+    /**
+     * constructor that uses a point,normal, color, and material to build a plane
+     * @param emission - the plane's color
+     * @param material the plane's material
+     * @param _p plane's point3D
+     * @param _normal plane's normal
+     */
+    public Plane(Color emission,Material material ,Point3D _p, Vector _normal) {
+        super(emission,material);//calls  geometry to assign black as emission color and the material
+
+        this._p = _p;
+        this._normal = _normal;
+    }
     /**
      * constructor
      * @param emissionLight emission light color
@@ -118,11 +131,10 @@ public class Plane extends Geometry
     /**
      * finds intersections between a ray and a plane
      * @param ray the ray we are looking for intersections with
-     * @param max - max distance (number)
      * @return list of Point3Ds that intersect with the plane
      */
     @Override
-    public List<geometries.Intersectable.GeoPoint> findIntersections(Ray ray,double max) {
+    public List<geometries.Intersectable.GeoPoint> findIntersections(Ray ray) {
         Vector v;
         try {
             v= _p.subtract(ray.get_p0());
@@ -135,8 +147,7 @@ public class Plane extends Geometry
             return null;
 
         double t = alignZero(_normal.dotProduct(v) / nv);
-        double distance=alignZero(max-t);
-             if(t<=0||distance<=0)//there are no intersections or the distance isnt positive
+             if(t<=0)//there are no intersections
              return null;
         Intersectable.GeoPoint geo = new Intersectable.GeoPoint(this, ray.getTargetPoint(t));
         return List.of(geo);//returns list of geopoint intersections

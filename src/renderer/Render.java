@@ -499,11 +499,7 @@ public class Render {
             }
             color = color.add(tempColor.reduce(beam.size()));
         }
-        if(beam.size()>1)
-            color=color.reduce(beam.size());
-        return color;
-
-
+         return color;
     }
     /**
      * calculates transparency - featured in course slideshow

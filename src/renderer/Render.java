@@ -441,37 +441,40 @@ public class Render {
                 //   if (unshaded(lightSource, l, n, gp))//if the geopoint isnt shaded by the light
                 transparencyAmount = transparency(lightSource, l,  gp.geometry.getNormal(gp.getPoint()), gp);
                 if (transparencyAmount * k > MIN_CALC_COLOR_K) {
-
-                    color = color.add(calcDiffusive(gp.geometry.get_material().getKd(), l.dotProduct( gp.geometry.getNormal(gp.getPoint())), lightSource.getIntensity(gp.getPoint())),
-                            calcSpecular(gp.geometry.get_material().getKs(), l,  gp.geometry.getNormal(gp.getPoint()), l.dotProduct( gp.geometry.getNormal(gp.getPoint())), v, gp.geometry.get_material().getnShininess(), lightSource.getIntensity(gp.getPoint())));
+                    Material material =gp.geometry.get_material();
+                    double ln =l.dotProduct( gp.geometry.getNormal(gp.getPoint()));
+                    color = color.add(calcDiffusive(
+                                    material.getKd(),
+                                    ln,
+                                    lightSource.getIntensity(gp.getPoint())),
+                            calcSpecular(
+                                    material.getKs(), l,
+                                    gp.geometry.getNormal(gp.getPoint()),
+                                    ln,
+                                    v,
+                                    material.getnShininess(),
+                                    lightSource.getIntensity(gp.getPoint())));
                 }
             }
         }
 
         if (kr > MIN_CALC_COLOR_K)//if the reflection is bigger than the minimum of calc color
         {
-
-
-
-            Ray reflection= constructReflectedRay(gp.getGeometry().getNormal(gp.getPoint()), gp.getPoint(), in);
+           Ray reflection= constructReflectedRay(gp.getGeometry().getNormal(gp.getPoint()), gp.getPoint(), in);
             if(this._numOfRays==0 ||this._rayDistance<0)
                 beam.add(reflection);
             else
                 beam=  reflection.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this._scene.getDistance(),this.get_numOfRays());
-
+            primitives.Color tempColor = primitives.Color.BLACK;
             for(Ray r :beam)
             {
                 Intersectable.GeoPoint reflectedGp = findClosestIntersection(r);//find the closest point to the reflection ray's p0
                 if (reflectedGp != null)//if such a point exists
                 {
-
-                    color = color.add(calcColor(reflectedGp, r, level - 1, kr).scale(kr));//calls the recursion th find the rest of the color and then scales it with the reflection
-
-
+                    tempColor = tempColor.add(calcColor(reflectedGp, r, level - 1, kr).scale(kr));//calls the recursion th find the rest of the color and then scales it with the reflection
                 }
-
-
             }
+            color = color.add(tempColor.reduce(beam.size()));
 
 
         }
@@ -485,16 +488,16 @@ public class Render {
                 beam.add(refraction);
             else
                 beam=  refraction.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this._scene.getDistance(),this.get_numOfRays());
+            primitives.Color tempColor = primitives.Color.BLACK;
             for(Ray r :beam) {
                 Intersectable.GeoPoint refractedGp = findClosestIntersection(r);//find the closest point to the refracted ray's p0
                 if (refractedGp != null)//if such a point exists
                 {
-                    color = color.add(calcColor(refractedGp, r, level - 1, kt).scale(kt));//calls the recursion to find the rest of the color and then scales it with the refracted
+                    tempColor = tempColor.add(calcColor(refractedGp, r, level - 1, kt).scale(kt));//calls the recursion to find the rest of the color and then scales it with the refracted
 
                 }
-
             }
-
+            color = color.add(tempColor.reduce(beam.size()));
         }
         if(beam.size()>1)
             color=color.reduce(beam.size());

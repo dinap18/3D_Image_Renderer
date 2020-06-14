@@ -130,6 +130,7 @@ public class Scene {
         this._camera = _camera;
     }
 
+
     /**
      * set distance function
      * @param _distance double

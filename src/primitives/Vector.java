@@ -1,7 +1,5 @@
 
 package primitives;
-
-import java.util.Objects;
    /**
          *Class Vector
    */
@@ -203,14 +201,7 @@ public class Vector {
                    ;
        }
 
-       public Vector findNormal() {
-           Vector b = new Vector(
-                   new Coordinate(1 / this.get_head().get_x().get()),
-                   new Coordinate(1 / this.get_head().get_y().get()),
-                   new Coordinate(-2 * 1 / this.get_head().get_z().get())
-           );
-           return b.normalized();
-       }
+
 
        /**
         * creates a vector  normal  to the vector that calls the function (the dot product of the new vector and the old vector equals zero)

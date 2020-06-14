@@ -1,5 +1,6 @@
 package renderer;
 
+
 import elements.Camera;
 import elements.LightSource;
 import geometries.*;
@@ -11,7 +12,6 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 import static primitives.Util.alignZero;
-
 /**
  * class Render
  */
@@ -26,7 +26,7 @@ public class Render {
      * constants for the base case of recursion
      */
     private static final int MAX_CALC_COLOR_LEVEL = 5;
-    private static final double MIN_CALC_COLOR_K = 0.00001;
+    private static final double MIN_CALC_COLOR_K = 0.001;
     /**
      * parameters for ray tracing- glossy surface and diffuse glass - they are in class render because this class takes care of ray tracing
      */
@@ -240,12 +240,12 @@ public class Render {
      * @param in Ray
      * @return the constructed reflected ray
      */
-  private Ray constructReflectedRay(Vector n, Point3D p, Ray in)
-  {
+    private Ray constructReflectedRay(Vector n, Point3D p, Ray in)
+    {
 
-      Vector r= in.get_dir().subtract(n.scale(((in.get_dir().dotProduct(n))*2)));
-      return new Ray(p,r,n);
-  }
+        Vector r= in.get_dir().subtract(n.scale(((in.get_dir().dotProduct(n))*2)));
+        return new Ray(p,r,n);
+    }
 
     /**
      * constructing a refracted(transparent) ray
@@ -254,10 +254,10 @@ public class Render {
      * @return the transparent ray
      */
     private Ray constructRefractedRay(Point3D p, Ray in,Vector n)
-{
+    {
 
-    return new Ray(p,in.get_dir(),n);
-}
+        return new Ray(p,in.get_dir(),n);
+    }
     /**
      * constructor for class render
      * @param imageWriter image writer
@@ -327,21 +327,21 @@ public class Render {
         for (int i = _threads - 1; i >= 0; --i)
         {
 
-                    threads[i] = new Thread(()->{
-                        Pixel pixel=new Pixel();
-                        while(thePixel.nextPixel(pixel)) {
-                            Ray ray = camera.constructRayThroughPixel(Nx, Ny, pixel.col, pixel.row, distance, width, height);//makes a new camera ray
-                            Intersectable.GeoPoint closest = findClosestIntersection(ray);//finds the closest point to the ray's p0
-                            if (closest == null)//if there are no intersection points than that pixel is background
-                            {
+            threads[i] = new Thread(()->{
+                Pixel pixel=new Pixel();
+                while(thePixel.nextPixel(pixel)) {
+                    Ray ray = camera.constructRayThroughPixel(Nx, Ny, pixel.col, pixel.row, distance, width, height);//makes a new camera ray
+                    Intersectable.GeoPoint closest = findClosestIntersection(ray);//finds the closest point to the ray's p0
+                    if (closest == null)//if there are no intersection points than that pixel is background
+                    {
 
-                                _imageWriter.writePixel(pixel.col, pixel.row, background);
-                            } else {
-                                java.awt.Color pixelColor = calcColor(closest, ray).getColor();//calculates the closest point's color
-                                _imageWriter.writePixel(pixel.col, pixel.row, pixelColor);//writes the closest point to the image we are creating
-                            }
-                        }
-                    });
+                        _imageWriter.writePixel(pixel.col, pixel.row, background);
+                    } else {
+                        java.awt.Color pixelColor = calcColor(closest, ray).getColor();//calculates the closest point's color
+                        _imageWriter.writePixel(pixel.col, pixel.row, pixelColor);//writes the closest point to the image we are creating
+                    }
+                }
+            });
 
 
 
@@ -409,89 +409,98 @@ public class Render {
      * @return the color intensity of the requested point
      */
     private primitives.Color calcColor(Intersectable.GeoPoint gp, Ray ray)
-{
-    primitives.Color output=calcColor(gp,ray,MAX_CALC_COLOR_LEVEL,1.0);
-     output.add(_scene.getAmbientLight().getIntensity());
-     return output;
-}
+    {
+        primitives.Color output=calcColor(gp,ray,MAX_CALC_COLOR_LEVEL,1.0);
+        output.add(_scene.getAmbientLight().getIntensity());
+        return output;
+    }
     /**
      * Calculate the color intensity in a point
      * @param gp the point for which the color is required
-   * @param in Ray
-    * @param level - the recursion level
-    * @param k - double - helps with recursion
+     * @param in Ray
+     * @param level - the recursion level
+     * @param k - double - helps with recursion
      * @return the color intensity
      */
     private primitives.Color calcColor(Intersectable.GeoPoint gp,Ray in,int level,double k) {
         if (level == 1 || k < MIN_CALC_COLOR_K)
             return primitives.Color.BLACK;
+        List<Ray>beam=new LinkedList<>();
         primitives.Color color = gp.getGeometry().get_emission();//the geometries emssion light
         Vector v = gp.point.subtract(_scene.getCamera().get_p0()).normalize();//subtracts the camera starting point from the geopoint and normalizes the vector
 
-        double nDotV =alignZero(  gp.geometry.getNormal(gp.getPoint()).dotProduct(v));//n dot product v
-        if (nDotV == 0) {
-            return color;
-        }
-        int nShininess = gp.geometry.get_material().getnShininess();//the geopoint's shininess
-        double kd = gp.geometry.get_material().getKd();//geopoint diffuse
-        double ks = gp.geometry.get_material().getKs();//geopoint specular
+
         double kr = k * gp.getGeometry().get_material().get_kR();//reflection
         double kt = k * gp.getGeometry().get_material().get_kT();//refraction
         double transparencyAmount=0;//transparency
         for (LightSource lightSource : _scene.getLightSources())//for each light source in the scene's light sources
         {
             Vector l = lightSource.getL(gp.point);//the lights direction from geopoint
-            if (alignZero( gp.geometry.getNormal(gp.getPoint()).dotProduct(l)) * alignZero( gp.geometry.getNormal(gp.getPoint()).dotProduct(v)) > 0)//if the dot proudct between the normal and the light direction times the dot product btween the normal and the normal vector between the camera and geopoint
+            if (alignZero( gp.geometry.getNormal(gp.getPoint()).dotProduct(l)) * alignZero( gp.geometry.getNormal(gp.getPoint()).dotProduct(v)) > 0)//if the dot product between the normal and the light direction times the dot product btween the normal and the normal vector between the camera and geopoint
             {
                 //   if (unshaded(lightSource, l, n, gp))//if the geopoint isnt shaded by the light
                 transparencyAmount = transparency(lightSource, l,  gp.geometry.getNormal(gp.getPoint()), gp);
                 if (transparencyAmount * k > MIN_CALC_COLOR_K) {
-                    primitives.Color lightIntensity = lightSource.getIntensity(gp.point).scale(transparencyAmount);//intensity color of the geopoint
-                    color = color.add(calcDiffusive(kd, l.dotProduct( gp.geometry.getNormal(gp.getPoint())), lightIntensity),
-                            calcSpecular(ks, l,  gp.geometry.getNormal(gp.getPoint()), l.dotProduct( gp.geometry.getNormal(gp.getPoint())), v, nShininess, lightIntensity))
-                    ;//adds the specular and diffuse lights to the color
+
+                    color = color.add(calcDiffusive(gp.geometry.get_material().getKd(), l.dotProduct( gp.geometry.getNormal(gp.getPoint())), lightSource.getIntensity(gp.getPoint())),
+                            calcSpecular(gp.geometry.get_material().getKs(), l,  gp.geometry.getNormal(gp.getPoint()), l.dotProduct( gp.geometry.getNormal(gp.getPoint())), v, gp.geometry.get_material().getnShininess(), lightSource.getIntensity(gp.getPoint())));
                 }
             }
         }
 
         if (kr > MIN_CALC_COLOR_K)//if the reflection is bigger than the minimum of calc color
         {
-            List<Ray>beam=new LinkedList<>();
-            if(this._numOfRays==0 ||this._radius<0||this._rayDistance<0)
-                beam.add(in);
+
+
+
+            Ray reflection= constructReflectedRay(gp.getGeometry().getNormal(gp.getPoint()), gp.getPoint(), in);
+            if(this._numOfRays==0 ||this._rayDistance<0)
+                beam.add(reflection);
             else
-                beam=  in.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this.getRadius(),this._scene.getDistance(),this.get_numOfRays());
-          for(Ray r :beam)
-          {
-              Ray reflection= constructReflectedRay(gp.getGeometry().getNormal(gp.getPoint()), gp.getPoint(), r);
-              Intersectable.GeoPoint reflectedGp = findClosestIntersection(reflection);//find the closest point to the reflection ray's p0
-              if (reflectedGp != null)//if such a point exists
-              {
-                  color = color.add(calcColor(reflectedGp, reflection, level - 1, kr).scale(kr));//calls the recursion th find the rest of the color and then scales it with the reflection
-              }
-          }
+                beam=  reflection.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this._scene.getDistance(),this.get_numOfRays());
+
+            for(Ray r :beam)
+            {
+                Intersectable.GeoPoint reflectedGp = findClosestIntersection(r);//find the closest point to the reflection ray's p0
+                if (reflectedGp != null)//if such a point exists
+                {
+
+                    color = color.add(calcColor(reflectedGp, r, level - 1, kr).scale(kr));//calls the recursion th find the rest of the color and then scales it with the reflection
+
+
+                }
+
+
+            }
 
 
         }
-
         if (kt > MIN_CALC_COLOR_K)//if the refraction is bigger than the minimum of calc color
         {
-            List<Ray>beam=new LinkedList<>();
-            if(this._numOfRays==0 ||this._radius<0||this._rayDistance<0)
-                beam.add(in);
-            else
-                beam=  in.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this.getRadius(),this._scene.getDistance(),this.get_numOfRays());
 
+
+
+            Ray refraction = constructRefractedRay(gp.getPoint(), in, gp.getGeometry().getNormal(gp.getPoint()));//constructs a refracted ray
+            if(this._numOfRays==0 ||this._rayDistance<0)
+                beam.add(refraction);
+            else
+                beam=  refraction.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this._scene.getDistance(),this.get_numOfRays());
             for(Ray r :beam) {
-                Ray refraction = constructRefractedRay(gp.getPoint(), r, gp.getGeometry().getNormal(gp.getPoint()));//constructs a refracted ray
-                Intersectable.GeoPoint refractedGp = findClosestIntersection(refraction);//find the closest point to the refracted ray's p0
+                Intersectable.GeoPoint refractedGp = findClosestIntersection(r);//find the closest point to the refracted ray's p0
                 if (refractedGp != null)//if such a point exists
                 {
-                    color = color.add(calcColor(refractedGp, refraction, level - 1, kt).scale(kt));//calls the recursion th find the rest of the color and then scales it with the refracted
+                    color = color.add(calcColor(refractedGp, r, level - 1, kt).scale(kt));//calls the recursion to find the rest of the color and then scales it with the refracted
+
                 }
+
             }
+
         }
+        if(beam.size()>1)
+            color=color.reduce(beam.size());
         return color;
+
+
     }
     /**
      * calculates transparency - featured in course slideshow
@@ -501,27 +510,27 @@ public class Render {
      * @param gp Geopoint
      * @return double - the amount of transparency
      */
- private   double transparency(LightSource light, Vector l, Vector n, Intersectable.GeoPoint gp)
-{
-    Vector direction=l.scale(-1);//direction from point to light source
-    Ray ray=new Ray(gp.getPoint(),direction,n);//creates a new ray with the geopoint and normal received and the light direction
-    List<Intersectable.GeoPoint>intersections=_scene.getGeometries().findIntersections(ray);//finds intersections between the scene's geometries and the new ray
-    if(intersections==null)//if there are no intersections
-        return 1.0;
-    double distance=light.getDistance(gp.getPoint());//the distance between the light source and the geopoint
-    double ktr=1.0;
-    for(Intersectable.GeoPoint g:intersections)//for each intersection point checks if the distance is negative and updates the transparency accordingly
+    private   double transparency(LightSource light, Vector l, Vector n, Intersectable.GeoPoint gp)
     {
-        if (alignZero(g.getPoint().distance(gp.getPoint()) - distance) <= 0) {
-            ktr *= g.getGeometry().get_material().get_kT();///multiplies with the geometry's transparency
-            if (ktr < MIN_CALC_COLOR_K)//if the transparency is smaller than the min calc color
-            {
-                return 0.0;
+        Vector direction=l.scale(-1);//direction from point to light source
+        Ray ray=new Ray(gp.getPoint(),direction,n);//creates a new ray with the geopoint and normal received and the light direction
+        List<Intersectable.GeoPoint>intersections=_scene.getGeometries().findIntersections(ray);//finds intersections between the scene's geometries and the new ray
+        if(intersections==null)//if there are no intersections
+            return 1.0;
+        double distance=light.getDistance(gp.getPoint());//the distance between the light source and the geopoint
+        double ktr=1.0;
+        for(Intersectable.GeoPoint g:intersections)//for each intersection point checks if the distance is negative and updates the transparency accordingly
+        {
+            if (alignZero(g.getPoint().distance(gp.getPoint()) - distance) <= 0) {
+                ktr *= g.getGeometry().get_material().get_kT();///multiplies with the geometry's transparency
+                if (ktr < MIN_CALC_COLOR_K)//if the transparency is smaller than the min calc color
+                {
+                    return 0.0;
+                }
             }
         }
+        return ktr;
     }
-    return ktr;
-}
     /**
      * checks if a value is positive
      * @param val - double

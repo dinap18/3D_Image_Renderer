@@ -2,8 +2,8 @@ package elements;
 
 import primitives.Point3D;
 import primitives.Ray;
-import primitives.Util;
 import primitives.Vector;
+
 
 import static primitives.Util.isZero;
 
@@ -114,5 +114,6 @@ public class Camera {
         return new Ray(_p0,Vij);//returns a new ray with the same starting point and a different vector
 
     }
+
 
 }

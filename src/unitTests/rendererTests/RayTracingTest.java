@@ -81,7 +81,7 @@ public class RayTracingTest {
                         new Material(0.3, 0.4, 5, 0, 0.4),20,
                         new Point3D(75, 120, -75)),
                 new Sphere(new Color(53,187,202)	,//blue
-                        new Material(0.25, 0.3, 5, 0, 0),15,
+                        new Material(0.25, 0.3, 5, 0.22, 0),15,
                         new Point3D(160, 165, 100)),
                 new Sphere(new Color(255,99,71),//red
                         new Material(0.25, 0.3, 5, 0,0.4),25,
@@ -99,7 +99,7 @@ public class RayTracingTest {
                         new Material(0.3, 0.4, 5, 0, 0.4),20,
                         new Point3D(-75, 120, -75)),
                 new Sphere(new Color	(53,202,93),//green
-                        new Material(0.3, 0.4, 5, 0, 0),15,
+                        new Material(0.3, 0.4, 5, 0.22, 0),15,
                         new Point3D(-160, 165, 100))
 
 
@@ -108,8 +108,8 @@ public class RayTracingTest {
         scene.addLights(
                 new DirectionalLight(new Color(210,210,210
                 ),new Vector(0,1,0)),
-//                new SpotLight(new Color(130, 100, 130),new Point3D(0, 30, -50),
-//                        new Vector(0,-1,0),1, 4E-5, 2E-7),
+                new SpotLight(new Color(130, 100, 130),new Point3D(0, 30, -50),
+                        new Vector(0,-1,0),1, 4E-5, 2E-7),
                 new PointLight(new Color(210,210,210),new Point3D(-160,165,100))
                 ,new PointLight(new Color(210,210,210),new Point3D(160, 165, 100))
         );

@@ -31,7 +31,7 @@ public class Render {
      * parameters for ray tracing- glossy surface and diffuse glass - they are in class render because this class takes care of ray tracing
      */
     private int _numOfRays;
-    private double _radius;
+
     private double _rayDistance;
     /**
      * parameters for threading
@@ -109,25 +109,7 @@ public class Render {
         this._numOfRays = _numOfRays;
     }
 
-    /**
-     * returns the size of the radius
-     *
-     * @return double - Radius
-     */
-    public double getRadius() {
-        return _radius;
-    }
 
-    /**
-     * sete the value or the radius for the circle to create a beam
-     *
-     * @param radius double - the radius of the circle we are using to create a beam
-     */
-    public void setRadius(double radius) {
-        if (radius < 0)
-            throw new IllegalArgumentException("radius can't be negative");
-        this._radius = radius;
-    }
 
     /**
      * private class pixel- needed for threading
@@ -353,6 +335,7 @@ public class Render {
         if (print) System.out.printf("\r100%%\n");
     }
 
+
     /**
      * Finding the closest point to the P0 of the camera.
      * @param  intersectionPoints list of points, the function should find from this list the closet point to P0 of the camera in the scene
@@ -426,7 +409,7 @@ public class Render {
         if (level == 1 || k < MIN_CALC_COLOR_K)
             return primitives.Color.BLACK;
         List<Ray>beam=new LinkedList<>();
-        primitives.Color color = gp.getGeometry().get_emission();//the geometries emssion light
+        primitives.Color color = gp.getGeometry().get_emission();//the geometries emission light
         Vector v = gp.point.subtract(_scene.getCamera().get_p0()).normalize();//subtracts the camera starting point from the geopoint and normalizes the vector
 
 
@@ -464,17 +447,17 @@ public class Render {
             if(this._numOfRays==0 ||this._rayDistance<0)
                 beam.add(reflection);
             else
-                beam=  reflection.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this._scene.getDistance(),this.get_numOfRays());
-            primitives.Color tempColor = primitives.Color.BLACK;
+                beam=  reflection.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this.get_rayDistance(),this.get_numOfRays());
+            primitives.Color tempColorReflection = primitives.Color.BLACK;
             for(Ray r :beam)
             {
                 Intersectable.GeoPoint reflectedGp = findClosestIntersection(r);//find the closest point to the reflection ray's p0
                 if (reflectedGp != null)//if such a point exists
                 {
-                    tempColor = tempColor.add(calcColor(reflectedGp, r, level - 1, kr).scale(kr));//calls the recursion th find the rest of the color and then scales it with the reflection
+                    tempColorReflection = tempColorReflection.add(calcColor(reflectedGp, r, level - 1, kr).scale(kr));//calls the recursion th find the rest of the color and then scales it with the reflection
                 }
             }
-            color = color.add(tempColor.reduce(beam.size()));
+            color = color.add(tempColorReflection.reduce(beam.size()));
 
 
         }
@@ -487,20 +470,19 @@ public class Render {
             if(this._numOfRays==0 ||this._rayDistance<0)
                 beam.add(refraction);
             else
-                beam=  refraction.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this._scene.getDistance(),this.get_numOfRays());
-            primitives.Color tempColor = primitives.Color.BLACK;
+                beam=  refraction.createBeamOfRays(gp.getGeometry().getNormal(gp.getPoint()),this.get_rayDistance(),this.get_numOfRays());
+            primitives.Color tempColorRefraction = primitives.Color.BLACK;
             for(Ray r :beam) {
                 Intersectable.GeoPoint refractedGp = findClosestIntersection(r);//find the closest point to the refracted ray's p0
                 if (refractedGp != null)//if such a point exists
                 {
-                    tempColor = tempColor.add(calcColor(refractedGp, r, level - 1, kt).scale(kt));//calls the recursion to find the rest of the color and then scales it with the refracted
+                    tempColorRefraction = tempColorRefraction.add(calcColor(refractedGp, r, level - 1, kt).scale(kt));//calls the recursion to find the rest of the color and then scales it with the refracted
 
                 }
             }
-            color = color.add(tempColor.reduce(beam.size()));
+            color = color.add(tempColorRefraction.reduce(beam.size()));
         }
-        if(beam.size()>1)
-            color=color.reduce(beam.size());
+
         return color;
 
 

@@ -33,6 +33,12 @@ public class Render {
     private int _numOfRays;
 
     private double _rayDistance;
+
+
+    /**
+     * bvh
+     */
+    private boolean _bvhtree;
     /**
      * parameters for threading
      */
@@ -47,7 +53,7 @@ public class Render {
      */
     public Render set_threads(int threads) {
         if (threads < 0)
-            throw new IllegalArgumentException("threading parameter cant be nagative");
+            throw new IllegalArgumentException("threading parameter cant be negative");
 
         if (threads == 0) {
             int cores = Runtime.getRuntime().availableProcessors() - _spareThreads;
@@ -109,7 +115,10 @@ public class Render {
         this._numOfRays = _numOfRays;
     }
 
-
+public void setBvh(boolean sign)
+{
+    this._scene.getGeometries().setBoxes=sign;
+}
 
     /**
      * private class pixel- needed for threading
@@ -135,7 +144,7 @@ public class Render {
             if (col < _maxCols) {
                 target.row = this.row;
                 target.col = this.col;
-                if (_counter == _nextCounter) {
+                if (print && _counter == _nextCounter) {
                     ++_percents;
                     _nextCounter = _pixels * (_percents + 1) / 100;
                     return _percents;
@@ -145,7 +154,9 @@ public class Render {
             ++row;
             if (row < _maxRows) {
                 col = 0;
-                if (_counter == _nextCounter) {
+                target.row = this.row;
+                target.col = this.col;
+                if (print && _counter == _nextCounter) {
                     ++_percents;
                     _nextCounter = _pixels * (_percents + 1) / 100;
                     return _percents;
@@ -200,7 +211,7 @@ public class Render {
             delta=n.scale(-DELTA);
         Point3D point = gp.point.add(delta);//adds the calculated delta to the geopoint
         Ray lightRay = new Ray(point, lightDirection,n);//creates a new ray from the point and the light direction and the nomral vector from geopoint
-        List<Intersectable.GeoPoint> intersections = _scene.getGeometries().findIntersections(lightRay);
+        List<Intersectable.GeoPoint> intersections = _scene.getGeometries().getfindIntersections(lightRay);
         if( intersections == null) return true;//checks if there are intersections with the light sources
 
         double lightDistance = light.getDistance(gp.point);//distance between the light source and geopoint
@@ -264,7 +275,8 @@ public class Render {
         Intersectable.GeoPoint closest=null;// so far the closest point is unknown
         double distance=Double.MAX_VALUE;
         double check;
-        List<Intersectable.GeoPoint>intersections=_scene.getGeometries().findIntersections(ray);
+
+       List<Intersectable.GeoPoint>intersections=_scene.getGeometries().bvhTree(ray);
         if(intersections==null)//if there are no intersection points
             return null;
         for(Intersectable.GeoPoint gp: intersections)//for each intersection point we check if it is closer to p0 than the previous pints
@@ -499,7 +511,7 @@ public class Render {
     {
         Vector direction=l.scale(-1);//direction from point to light source
         Ray ray=new Ray(gp.getPoint(),direction,n);//creates a new ray with the geopoint and normal received and the light direction
-        List<Intersectable.GeoPoint>intersections=_scene.getGeometries().findIntersections(ray);//finds intersections between the scene's geometries and the new ray
+        List<Intersectable.GeoPoint>intersections=_scene.getGeometries().getfindIntersections(ray);//finds intersections between the scene's geometries and the new ray
         if(intersections==null)//if there are no intersections
             return 1.0;
         double distance=light.getDistance(gp.getPoint());//the distance between the light source and the geopoint

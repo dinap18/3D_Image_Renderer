@@ -83,6 +83,29 @@ public class Polygon extends Geometry {
             if (positive != (edge1.crossProduct(edge2).dotProduct(n) > 0))
                 throw new IllegalArgumentException("All vertices must be ordered and the polygon must be convex");
         }
+        if(this.setBoxes==true) {
+            box.x1 = this._vertices.get(0).get_x().get();
+            box.x2 = this._vertices.get(0).get_x().get();
+            box.y1 = this._vertices.get(0).get_y().get();
+            box.y2 = this._vertices.get(0).get_y().get();
+            box.z1 = this._vertices.get(0).get_z().get();
+            box.z2 = this._vertices.get(0).get_z().get();
+
+            for (int i = 1; i < this._vertices.size(); i++) {
+                if (this._vertices.get(i).get_x().get() < box.x1)
+                    box.x1 = this._vertices.get(i).get_x().get();
+                if (this._vertices.get(i).get_y().get() < box.y1)
+                    box.y1 = this._vertices.get(i).get_y().get();
+                if (this._vertices.get(i).get_z().get() < box.z1)
+                    box.z1 = this._vertices.get(i).get_z().get();
+                if (this._vertices.get(i).get_x().get() > box.x2)
+                    box.x2 = this._vertices.get(i).get_x().get();
+                if (this._vertices.get(i).get_y().get() > box.y2)
+                    box.y2 = this._vertices.get(i).get_y().get();
+                if (this._vertices.get(i).get_z().get() > box.z2)
+                    box.z2 = this._vertices.get(i).get_z().get();
+            }
+        }
     }
 
     /**
@@ -107,12 +130,22 @@ public class Polygon extends Geometry {
     }
 
     /**
+     * get vertices function
+     * @return returns the list of the polygons vertices
+     */
+    public List<Point3D> get_vertices() {
+        return _vertices;
+    }
+
+    /**
      * finds intersections between a ray and a polygon
      * @param ray the ray we are looking for intersection points with
      * @return list of Point3Ds that intersect with the polygon
      */
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
+     //   if((this.setBoxes==true && this.intersects(ray) || this.setBoxes==false))
+     //   {
         List<GeoPoint> planeIntersections = _plane.findIntersections(ray);
         if (planeIntersections == null)//if there are no intersections with the plane there wont be any with the polygon
             return null;
@@ -148,6 +181,8 @@ public class Polygon extends Geometry {
         {
             result.add(new GeoPoint(this, geo.getPoint()));
         }
-        return result;//list of geopoint intersections
+            return result;//list of geopoint intersections
+  //  }
+    //    return null;
     }
 }

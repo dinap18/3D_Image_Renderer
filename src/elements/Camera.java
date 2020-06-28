@@ -27,7 +27,7 @@ public class Camera {
         return new Point3D(_p0);
     }
 
-    /**
+    /**דגזגגזזגגגגגגגגגגגגגגגגגגגבגדבדגבגד
      * get vUp function
      * @return camera up direction
      */

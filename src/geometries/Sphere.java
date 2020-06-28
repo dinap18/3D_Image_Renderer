@@ -18,7 +18,7 @@ public class Sphere extends RadialGeometry
     /**
      *fields (center)
      */
-    private final Point3D _center;
+    private  Point3D _center;
 
     /**
      * Constructor of Sphere
@@ -39,7 +39,16 @@ public class Sphere extends RadialGeometry
      */
     public Sphere(Color emissionLight, Material material, double radius, Point3D center) {
         super(emissionLight, radius, material);
-        this._center = new Point3D(center);
+
+            this._center = new Point3D(center);
+        if(this.setBoxes   ==true) {
+            this.box.x1 = center.get_x().get() - radius;
+            this.box.x2 = center.get_x().get() + radius;
+            this.box.y1 = center.get_y().get() - radius;
+            this.box.y2 = center.get_y().get() + radius;
+            this.box.z1 = center.get_z().get() - radius;
+            this.box.z2 = center.get_z().get() + radius;
+        }
     }
 
     /**
@@ -89,47 +98,53 @@ public class Sphere extends RadialGeometry
      */
     @Override
     public  List<GeoPoint> findIntersections(Ray ray) {
-        Point3D p0 = ray.get_p0();//beginning point of ray
-        Vector v = ray.get_dir();//direction of ray
-        Vector u;
-        try//checking if the center of the sphere and p0 are the same point
-        {
-            u = _center.subtract(p0);
-        } catch (IllegalArgumentException e)//zero vector
-        {
-            return List.of(new GeoPoint(this, (ray.getTargetPoint(this._radius))));//geopoint with Point3D that is target point of the radius
-        }
-        double tm = alignZero(v.dotProduct(u));//direction of ray dot product vector u
-        double dSquared;
-        if (tm == 0)
-            dSquared= u.lengthSquared() ;//the length of vector u squared
-       else
-        dSquared=u.lengthSquared() - tm * tm;//the length of vector u squared minus v dot product u squared
-        double thSquared = alignZero(this._radius * this._radius - dSquared);
+      // if((this.setBoxes==true && this.intersects(ray))||this.setBoxes==false)
+     //  {
+            Point3D p0 = ray.get_p0();//beginning point of ray
+            Vector v = ray.get_dir();//direction of ray
+            Vector u;
+            try//checking if the center of the sphere and p0 are the same point
+            {
+                u = _center.subtract(p0);
+            } catch (IllegalArgumentException e)//zero vector
+            {
+                return List.of(new GeoPoint(this, (ray.getTargetPoint(this._radius))));//geopoint with Point3D that is target point of the radius
+            }
+            double tm = alignZero(v.dotProduct(u));//direction of ray dot product vector u
+            double dSquared;
+            if (tm == 0)
+                dSquared = u.lengthSquared();//the length of vector u squared
+            else
+                dSquared = u.lengthSquared() - tm * tm;//the length of vector u squared minus v dot product u squared
+            double thSquared = alignZero(this._radius * this._radius - dSquared);
 
-        if (thSquared <= 0)//if thsquared is smaller than or equal to zero there are no intersection points
-            return null;
+            if (thSquared <= 0)//if thsquared is smaller than or equal to zero there are no intersection points
+                return null;
 
-        double th = alignZero(Math.sqrt(thSquared));//square root if thSquared
-        if (th == 0)//if the root if thsquared equals zero there are no intersection points
-            return null;
+            double th = alignZero(Math.sqrt(thSquared));//square root if thSquared
+            if (th == 0)//if the root if thsquared equals zero there are no intersection points
+                return null;
 
-        double t1 = alignZero(tm - th);
-        double t2 = alignZero(tm + th);
-        if (t1 <= 0 && t2 <= 0)//if they are both smaller of equal to zero there are no intersection points
-            return null;
-        if(v.get_head()==Point3D.ZERO)
-            return null;
-        if (t1 > 0 && t2 > 0 )//if they are both bigger than zero
-        {
-            return List.of(
-                    new GeoPoint(this,(ray.getTargetPoint(t1)))//the target point with t1
-                    ,new GeoPoint(this,(ray.getTargetPoint(t2))));//the target point with t2
-        }
-        if (t1 > 0 )//if only t1 is bigger than zero
-            return List.of(new GeoPoint(this,(ray.getTargetPoint(t1))));
-        else if(t2>0 )//if t2 is positive
-            return List.of(new GeoPoint(this,(ray.getTargetPoint(t2))));
+            double t1 = alignZero(tm - th);
+            double t2 = alignZero(tm + th);
+            if (t1 <= 0 && t2 <= 0)//if they are both smaller of equal to zero there are no intersection points
+                return null;
+            if (v.get_head() == Point3D.ZERO)
+                return null;
+            if (t1 > 0 && t2 > 0)//if they are both bigger than zero
+            {
+                return List.of(
+                        new GeoPoint(this, (ray.getTargetPoint(t1)))//the target point with t1
+                        , new GeoPoint(this, (ray.getTargetPoint(t2))));//the target point with t2
+            }
+            if (t1 > 0)//if only t1 is bigger than zero
+                return List.of(new GeoPoint(this, (ray.getTargetPoint(t1))));
+            else if (t2 > 0)//if t2 is positive
+                return List.of(new GeoPoint(this, (ray.getTargetPoint(t2))));
+
+      // }
         return null;//no intersection points
     }
+
+
 }

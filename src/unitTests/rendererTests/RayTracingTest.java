@@ -70,15 +70,15 @@ public class RayTracingTest {
     {
         Scene scene = new Scene("Test scene");
         scene.set_camera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
-        scene.set_distance(600);
+        scene.set_distance(800);
         scene.set_background(new Color	(0,0,0));
         scene.set_ambientLight(new AmbientLight(new Color(255, 191, 191), 1));
 
         scene.addGeometries(
-                new Plane(Color.BLACK,new Material(0.2,0.2,5,0,0.4),new Point3D(0,0,210),
-                        new Vector(0,0,-1)),
+//                new Plane(Color.BLACK,new Material(0.2,0.2,5,0,0.4),new Point3D(0,0,210),
+//                        new Vector(0,0,-1)),
                 new Sphere(new Color(212,175,55),//gold
-                        new Material(0.3, 0.4, 5, 0, 0.4),20,
+                        new Material(0.2, 0.4, 5, 0.8, 0),20,
                         new Point3D(75, 120, -75)),
                 new Sphere(new Color(53,187,202)	,//blue
                         new Material(0.25, 0.3, 5, 0.22, 0),15,
@@ -105,6 +105,7 @@ public class RayTracingTest {
 
         );
 
+
         scene.addLights(
                 new DirectionalLight(new Color(210,210,210
                 ),new Vector(0,1,0)),
@@ -114,38 +115,14 @@ public class RayTracingTest {
                 ,new PointLight(new Color(210,210,210),new Point3D(160, 165, 100))
         );
 
-        ImageWriter imageWriter = new ImageWriter("ray tracing 2 - 50", 200, 200, 500, 500);
+        ImageWriter imageWriter = new ImageWriter("ray tracing 2 - 50 bvh", 200, 200, 500, 500);
         Render render = new Render(imageWriter, scene);
         render.set_numOfRays(50);
-
+     //   render.setBvh(true);
        render.set_rayDistance(1);
        render.set_threads(3).setPrint();
         render.renderImage();
         render.writeToImage();
     }
-@Test
-    public void glossySurfaceTest()
-    {
-        Scene scene = new Scene("Test scene");
-        scene.set_camera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
-        scene.set_distance(1000);
-        scene.set_background(new Color	(231,64,53));
-        scene.set_ambientLight(new AmbientLight(new Color(255, 191, 191), 1));
 
-        scene.addGeometries( new Plane(new Color(255, 191, 191),new Material(0.2,0.9,5,0,0),new Point3D(0,1,0),
-                new Vector(0,-1,0)),new Sphere(new Color(192,192,192),new Material(
-                        0,0.8,5,1,0),30,new Point3D(0,-30,100) ));
-        scene.addLights(
-                new SpotLight(new Color(130, 100, 130),new Point3D(0, 30, -50),
-                        new Vector(0,-1,0),1, 4E-5, 2E-7)
-        );
-        ImageWriter imageWriter = new ImageWriter("glossy surface- 50", 200, 200, 500, 500);
-        Render render = new Render(imageWriter, scene);
-        render.set_numOfRays(50);
-
-        render.set_rayDistance(100);
-        render.set_threads(3).setPrint();
-        render.renderImage();
-        render.writeToImage();
-    }
 }

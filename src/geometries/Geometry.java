@@ -6,7 +6,7 @@ import primitives.*;
 /**
  * interface of geometries
  */
-public abstract class Geometry implements Intersectable
+public abstract class Geometry extends Intersectable
 {
 
     /**

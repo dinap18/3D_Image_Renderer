@@ -5,17 +5,21 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *  interface that contains list of intersection points
+ *  abstract class that contains list of intersection points
  */
 public abstract class Intersectable {
 
+    /**
+     * parameter for using BVH feature
+     */
     public boolean setBoxes = false;
 
 
-
-
-
+    /**
+     * inside helper class Bounding Box
+     */
     public class BoundingBox {
+        // 1 is the min value of the coordinate and 2 is the max , we start them at + - infinity
         public double x1 = Double.NEGATIVE_INFINITY;
         public double x2 = Double.POSITIVE_INFINITY;
         public double y1 = Double.NEGATIVE_INFINITY;
@@ -25,143 +29,64 @@ public abstract class Intersectable {
 
     }
 
-
+    //calls the default constructor to build a box for each intersectable shape
     protected BoundingBox box = new BoundingBox();
 
+    /**
+     * checks if a ray intersects the box around a geometry
+     * @param r the ray we are checking for an intersection with
+     * @return
+     */
     public boolean intersects(Ray r) {
-//        double tmin = (box.x1 - r.get_p0().get_x().get()) / r.get_dir().get_head().get_x().get();
-//        double tmax = (box.x2 - r.get_p0().get_x().get()) / r.get_dir().get_head().get_x().get();
-//        double temp;
-//        if (tmin > tmax) {
-//            temp = tmin;
-//            tmin = tmax;
-//            tmax = temp;
-//        }
-//
-//        double tymin = (box.y1 - r.get_p0().get_y().get()) / r.get_dir().get_head().get_y().get();
-//        double tymax = (box.y2 - r.get_p0().get_y().get()) / r.get_dir().get_head().get_y().get();
-//
-//        if (tymin > tymax) {
-//            temp = tymin;
-//            tymin = tymax;
-//            tymax = temp;
-//        }
-//        if ((tmin > tymax) || (tymin > tmax))
-//            return false;
-//
-//        if (tymin > tmin)
-//            tmin = tymin;
-//
-//        if (tymax < tmax)
-//            tmax = tymax;
-//
-//        double tzmin = (box.z1 - r.get_p0().get_z().get()) / r.get_dir().get_head().get_z().get();
-//        double tzmax = (box.z2 - r.get_p0().get_z().get()) / r.get_dir().get_head().get_z().get();
-//
-//        if (tzmin > tzmax) {
-//            temp = tzmin;
-//            tzmin = tzmax;
-//            tzmax = temp;
-//        }
-//
-//        if ((tmin > tzmax) || (tzmin > tmax))
-//            return false;
-//
-//
-//        return true;
-        Point3D start = r.get_p0();
-
-        double start_X = start.get_x().get();
-        double start_Y = start.get_y().get();
-        double start_Z = start.get_z().get();
-
-        Point3D direction = r.get_dir().get_head();
-
-        double direction_X = direction.get_x().get();
-        double direction_Y = direction.get_y().get();
-        double direction_Z = direction.get_z().get();
-
-        double max_t_for_X;
-        double min_t_for_X;
-
-        //If the direction_X is negative then the _min_X give the maximal value
-        if (direction_X < 0) {
-            max_t_for_X = (box.x1 - start_X) / direction_X;
-            // Check if the Intersectble is behind the camera
-            if (max_t_for_X <= 0) return false;
-            min_t_for_X = (box.x2 - start_X) / direction_X;
-        }
-        else if (direction_X > 0) {
-            max_t_for_X = (box.x2 - start_X) / direction_X;
-            if (max_t_for_X <= 0) return false;
-            min_t_for_X = (box.x1 - start_X) / direction_X;
-        }
-        else {
-            if (start_X >= box.x1 || start_X <= box.x1)
-                return false;
-            else{
-                max_t_for_X = Double.POSITIVE_INFINITY;
-                min_t_for_X = Double.NEGATIVE_INFINITY;
-            }
+        double xP=r.get_p0().get_x().get();
+        double xD=r.get_dir().get_head().get_x().get();
+        double yP=r.get_p0().get_y().get();
+        double yD=r.get_dir().get_head().get_y().get();
+        double zP=r.get_p0().get_z().get();
+        double zD=r.get_dir().get_head().get_z().get();
+        double tmin = (box.x1 - xP / xD); //starting min x
+        double tmax = (box.x2 - xP /xD);//starting max x
+        double temp;
+        if (tmin > tmax) // if min is bigger we need to swap them so max will have the bigger value
+        {
+            temp = tmin;
+            tmin = tmax;
+            tmax = temp;
         }
 
-        double max_t_for_Y;
-        double min_t_for_Y;
+        double tymin = (box.y1 - yP / yD);//min y
+        double tymax = (box.y2 - yP/ yD);//min x
 
-        if (direction_Y < 0) {
-            max_t_for_Y = (box.y1 - start_Y) / direction_Y;
-            if (max_t_for_Y <= 0) return false;
-            min_t_for_Y = (box.y2 - start_Y) / direction_Y;
+        if (tymin > tymax)  // if min is bigger we need to swap them so max will have the bigger value
+        {
+            temp = tymin;
+            tymin = tymax;
+            tymax = temp;
         }
-        else if (direction_Y > 0) {
-            max_t_for_Y = (box.y2 - start_Y) / direction_Y;
-            if (max_t_for_Y <= 0) return false;
-            min_t_for_Y = (box.y1 - start_Y) / direction_Y;
-        }
-        else {
-            if (start_Y >= box.y2 || start_Y <= box.y1)
-                return false;
-            else{
-                max_t_for_Y = Double.POSITIVE_INFINITY;
-                min_t_for_Y = Double.NEGATIVE_INFINITY;
-            }
-        }
+        if ((tmin > tymax) || (tymin > tmax)) // if min x is bigger than max y or min y is bigger than max x there cant be an intersection with the box
+            return false;
 
-        //Check the maximal and the minimal value for t
-        double temp_max = Math.min(max_t_for_Y,max_t_for_X);
-        double temp_min = Math.max(min_t_for_Y,min_t_for_X);
-        temp_min = Math.max(temp_min,0);
+        if (tymin > tmin) //if y min is bigger than x min then it takes its place
+            tmin = tymin;
 
-        if (temp_max < temp_min) return false;
+        if (tymax < tmax)//if y max is bigger than x max then it takes its place
+            tmax = tymax;
 
-        double max_t_for_Z;
-        double min_t_for_Z;
+        double tzmin = (box.z1 - zP / zD);//z min
+        double tzmax = (box.z2 - zP / zD); //z max
 
-        if (direction_Z < 0) {
-            max_t_for_Z = (box.z1 - start_Z) / direction_Z;
-            if (max_t_for_Z <= 0) return false;
-            min_t_for_Z = (box.z2 - start_Z) / direction_Z;
-        }
-        else if (direction_Z > 0) {
-            max_t_for_Z = (box.z2 - start_Z) / direction_Z;
-            if (max_t_for_Z <= 0) return false;
-            min_t_for_Z = (box.z2 - start_Z) / direction_Z;
-        }
-        else {
-            if (start_Z >= box.z2 || start_Z <= box.z1)
-                return false;
-            else{
-                max_t_for_Z = Double.POSITIVE_INFINITY;
-                min_t_for_Z = Double.NEGATIVE_INFINITY;
-            }
+        if (tzmin > tzmax) // if min is bigger we need to swap them so max will have the bigger value
+        {
+            temp = tzmin;
+            tzmin = tzmax;
+            tzmax = temp;
         }
 
-        temp_max = Math.min(max_t_for_Z,temp_max);
-        temp_min = Math.max(min_t_for_Z,temp_min);
+        if ((tmin > tzmax) || (tzmin > tmax)) // if min  is bigger than max z or min z is bigger than max  there cant be an intersection with the box
+            return false;
 
-        if (temp_max < temp_min) return false;
 
-        return true;
+        return true; // if the ray intersects the box
 
     }
 

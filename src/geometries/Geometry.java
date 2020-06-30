@@ -4,7 +4,7 @@ import primitives.Material;
 import primitives.*;
 
 /**
- * interface of geometries
+ * abstract class geometry extends the abstract intersectable class
  */
 public abstract class Geometry extends Intersectable
 {

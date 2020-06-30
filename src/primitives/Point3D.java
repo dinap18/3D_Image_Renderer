@@ -49,8 +49,8 @@ public class Point3D {
      * @param p
      */
     public Point3D(Point3D p) {
-        new Point3D(_x=new Coordinate(p._x),_y=new Coordinate(p._y),
-        _z = new Coordinate(p._z));
+        new Point3D(_x=p._x,_y=p._y,
+        _z = p._z);
     }
 
     /**
@@ -58,15 +58,15 @@ public class Point3D {
          * @return new Coordinate based on _x , _y, or _z
          */
         public Coordinate get_x() {
-            return new Coordinate(_x);
+            return _x;
         }
 
         public Coordinate get_y() {
-            return new Coordinate(_y);
+            return _y;
         }
 
         public Coordinate get_z() {
-            return new Coordinate(_z);
+            return _z;
         }
 
         /**
@@ -104,10 +104,10 @@ public class Point3D {
          * @return Vector
          */
         public Vector subtract(Point3D p) {
-            return new Vector(new Point3D(
+            return new Vector(
                     this._x._coord - p._x._coord,
                     this._y._coord - p._y._coord,
-                    this._z._coord - p._z._coord));
+                    this._z._coord - p._z._coord);
         }
         
             /**

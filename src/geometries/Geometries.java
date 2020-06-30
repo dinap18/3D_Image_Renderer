@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 /**
- * geometries class that implements the intersectable interface
+ * geometries class that extends the intersectable abstract class
  */
 public class Geometries extends Intersectable {
     /**
@@ -37,8 +37,9 @@ public class Geometries extends Intersectable {
      * default constructor for class geometries
      */
     public Geometries() {
+        //for BVH
         if (this.setBoxes == true ) {
-
+            //makes them the opposite of what they should be so we can build boxes by checking if there is a bigger max or smaller min
             this.box.x2 = Double.NEGATIVE_INFINITY;
 
             this.box.x1 = Double.POSITIVE_INFINITY;
@@ -47,19 +48,20 @@ public class Geometries extends Intersectable {
             this.box.z2 = Double.NEGATIVE_INFINITY;
             this.box.z1 = Double.POSITIVE_INFINITY;
         }
-        _geometries = new ArrayList<Intersectable>();//creates a new list for intersectable geometries
+        _geometries = new ArrayList<>();//creates a new list for intersectable geometries
     }
 
     /**
-     * adds new shapes to the geometry list
+     * adds new shapes to the geometry list and sets the bounding boxes is required
      * @param geometries - list of intersectable geometries
      */
     public void add(Intersectable... geometries)
     {
 
-        for (Intersectable geo : geometries )// adds each of the geometries the function recieved to to the list of intersectable geometries
+        for (Intersectable geo : geometries )// adds each of the geometries the function received to to the list of intersectable geometries
         {
             _geometries.add(geo);
+            //sets the bounding boxes between shapes - if there is a bigger max value of smaller min value for one of the coordinates than what we already have we will switch it
             if(this.setBoxes==true)
             {
                 if (geo.box.x2 > this.box.x2)
@@ -76,7 +78,7 @@ public class Geometries extends Intersectable {
                     this.box.z1 = geo.box.z1;
 
             }
-     //       _geoList.add((Geometries) _geometries);
+     //      _geoList.add((Geometries) _geometries);
         }
 
 
@@ -92,20 +94,20 @@ public class Geometries extends Intersectable {
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
         List<GeoPoint> intersections = new LinkedList<GeoPoint>();
-        if(this.setBoxes==false || this.intersects(ray)) {
+
             for (Intersectable geo : _geometries) //finds the intersection points for each geometry and adds them to the list of geopoints to be returned
             {
-               // if ((this.setBoxes == true && geo.intersects(ray)) || this.setBoxes == false) {
+                if ((this.setBoxes == true && geo.intersects(ray)) || this.setBoxes == false) {
                     List<GeoPoint> tempIntersections = geo.findIntersections(ray);
                     if (tempIntersections != null) //if intersection points were found we need to add them to the list
                     {
                         intersections.addAll(tempIntersections);
                     }
-                //}
+                }
             }
             if (intersections.size() == 0)//if none of the shapes have intersection points with the ray null is returned
                 return null;
-        }
+
         return intersections;
 
     }
@@ -132,18 +134,24 @@ public class Geometries extends Intersectable {
         }
     }
 
+    /**
+     * recursive function to check for intersections with the bvh tree
+     * @param ray the ray we are checking for an intersection with
+     * @return list of intersection points
+     */
     public List<GeoPoint> bvhTree(Ray ray)
     {
-        if(this._geoList.size()==0)
+        if(this._geoList.size()==0)//if there are no boxes left to check
         {
-            return this.findIntersections(ray);
+            return this.findIntersections(ray);//we need to check for an intersection with the geometry
         }
-        else {
-        if(this.intersects(ray))
-        {
-            for(Geometries geo : this._geoList)
+        else
             {
-                geo.bvhTree(ray);
+        if(this.intersects(ray))// if there is an intersection with a ray
+        {
+            for(Geometries geo : this._geoList)// for each geometry in the box that we found an intersection with
+            {
+                geo.bvhTree(ray);//recursive call
             }
         }
     }

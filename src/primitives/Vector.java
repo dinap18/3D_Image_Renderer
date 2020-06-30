@@ -29,10 +29,10 @@ public class Vector {
         * @param z-double
         */
        public Vector(double x, double y, double z) {
-           if (new Point3D(new Coordinate(x), new Coordinate(y), new Coordinate(z)).equals(Point3D.ZERO)) {
+           if (new Point3D(x, y,z).equals(Point3D.ZERO)) {
                throw new IllegalArgumentException("vector cannot be the zero vector");
            }
-           this._head = new Point3D(new Coordinate(x), new Coordinate(y), new Coordinate(z));
+           this._head = new Point3D(x, y, z);
        }
 
 
@@ -65,7 +65,7 @@ public class Vector {
         * @return Point3D which is the vector's head
         */
        public Point3D get_head() {
-           return new Point3D(_head._x, _head._y, _head._z);
+           return  this._head;
        }
 
        /**
@@ -91,7 +91,7 @@ public class Vector {
         * @return vector- subtracts one vector from the other and returns the result
         */
        public Vector subtract(Vector v) {
-           return new Vector(this._head.subtract(v._head));
+           return (this._head.subtract(v._head));
 
        }
 
@@ -139,10 +139,7 @@ public class Vector {
            double x = (this._head.get_y().get() * (v._head.get_z().get())) - (this._head.get_z().get() * (v._head.get_y().get()));
            double y = (this._head.get_z().get() * (v._head.get_x().get())) - (this._head.get_x().get() * (v._head.get_z().get()));
            double z = (this._head.get_x().get() * (v._head.get_y().get())) - (this._head.get_y().get() * (v._head.get_x().get()));
-           Coordinate x1 = new Coordinate(x);
-           Coordinate y1 = new Coordinate(y);
-           Coordinate z1 = new Coordinate(z);
-           return new Vector(new Point3D(x1, y1, z1));
+           return new Vector(new Point3D(x, y, z));
        }
 
        /**

@@ -41,13 +41,14 @@ public class Sphere extends RadialGeometry
         super(emissionLight, radius, material);
 
             this._center = new Point3D(center);
+            //sets the bounding box parameters for BVH
         if(this.setBoxes   ==true) {
-            this.box.x1 = center.get_x().get() - radius;
-            this.box.x2 = center.get_x().get() + radius;
-            this.box.y1 = center.get_y().get() - radius;
-            this.box.y2 = center.get_y().get() + radius;
-            this.box.z1 = center.get_z().get() - radius;
-            this.box.z2 = center.get_z().get() + radius;
+            this.box.x1 = center.get_x().get() - radius; // x min
+            this.box.x2 = center.get_x().get() + radius; //x max
+            this.box.y1 = center.get_y().get() - radius; // y min
+            this.box.y2 = center.get_y().get() + radius; // y max
+            this.box.z1 = center.get_z().get() - radius; // z min
+            this.box.z2 = center.get_z().get() + radius; // z max
         }
     }
 
@@ -98,8 +99,7 @@ public class Sphere extends RadialGeometry
      */
     @Override
     public  List<GeoPoint> findIntersections(Ray ray) {
-      // if((this.setBoxes==true && this.intersects(ray))||this.setBoxes==false)
-     //  {
+
             Point3D p0 = ray.get_p0();//beginning point of ray
             Vector v = ray.get_dir();//direction of ray
             Vector u;
@@ -142,7 +142,7 @@ public class Sphere extends RadialGeometry
             else if (t2 > 0)//if t2 is positive
                 return List.of(new GeoPoint(this, (ray.getTargetPoint(t2))));
 
-      // }
+
         return null;//no intersection points
     }
 

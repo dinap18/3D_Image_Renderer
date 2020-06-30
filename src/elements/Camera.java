@@ -12,7 +12,7 @@ import static primitives.Util.isZero;
  */
 public class Camera {
     /**
-     * fields for class camera
+     * fields for class camera - the camera starting point and three vectors
      */
     Point3D _p0;
     Vector _vUp;
@@ -27,7 +27,8 @@ public class Camera {
         return new Point3D(_p0);
     }
 
-    /**דגזגגזזגגגגגגגגגגגגגגגגגגגבגדבדגבגד
+    /**
+     *
      * get vUp function
      * @return camera up direction
      */

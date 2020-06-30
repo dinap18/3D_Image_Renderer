@@ -83,7 +83,9 @@ public class Polygon extends Geometry {
             if (positive != (edge1.crossProduct(edge2).dotProduct(n) > 0))
                 throw new IllegalArgumentException("All vertices must be ordered and the polygon must be convex");
         }
+        //calculates the box parameters for BVH
         if(this.setBoxes==true) {
+            //starting points
             box.x1 = this._vertices.get(0).get_x().get();
             box.x2 = this._vertices.get(0).get_x().get();
             box.y1 = this._vertices.get(0).get_y().get();
@@ -92,17 +94,17 @@ public class Polygon extends Geometry {
             box.z2 = this._vertices.get(0).get_z().get();
 
             for (int i = 1; i < this._vertices.size(); i++) {
-                if (this._vertices.get(i).get_x().get() < box.x1)
+                if (this._vertices.get(i).get_x().get() < box.x1)//checks for min x
                     box.x1 = this._vertices.get(i).get_x().get();
-                if (this._vertices.get(i).get_y().get() < box.y1)
+                if (this._vertices.get(i).get_y().get() < box.y1)//checks for min y
                     box.y1 = this._vertices.get(i).get_y().get();
-                if (this._vertices.get(i).get_z().get() < box.z1)
+                if (this._vertices.get(i).get_z().get() < box.z1)//checks for min z
                     box.z1 = this._vertices.get(i).get_z().get();
-                if (this._vertices.get(i).get_x().get() > box.x2)
+                if (this._vertices.get(i).get_x().get() > box.x2)//checks for max x
                     box.x2 = this._vertices.get(i).get_x().get();
-                if (this._vertices.get(i).get_y().get() > box.y2)
+                if (this._vertices.get(i).get_y().get() > box.y2)//checks for max y
                     box.y2 = this._vertices.get(i).get_y().get();
-                if (this._vertices.get(i).get_z().get() > box.z2)
+                if (this._vertices.get(i).get_z().get() > box.z2)//checks for max z
                     box.z2 = this._vertices.get(i).get_z().get();
             }
         }
@@ -144,8 +146,7 @@ public class Polygon extends Geometry {
      */
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
-     //   if((this.setBoxes==true && this.intersects(ray) || this.setBoxes==false))
-     //   {
+
         List<GeoPoint> planeIntersections = _plane.findIntersections(ray);
         if (planeIntersections == null)//if there are no intersections with the plane there wont be any with the polygon
             return null;
@@ -182,7 +183,6 @@ public class Polygon extends Geometry {
             result.add(new GeoPoint(this, geo.getPoint()));
         }
             return result;//list of geopoint intersections
-  //  }
-    //    return null;
+
     }
 }

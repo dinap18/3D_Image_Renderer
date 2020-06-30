@@ -45,7 +45,7 @@ public class Ray {
         Vector nDelta;
         if (dotProdNormal > 0)//if positive
             nDelta = n.scale(DELTA);
-        else//we scale it with a negative
+        else//we scale it with a negative so it will be in the same direction
             nDelta = n.scale(-DELTA);
         _p0 = p.add(nDelta);//adds ndelta to the starting point
     }
@@ -126,12 +126,12 @@ public class Ray {
         Point3D randomP = Point3D.ZERO;
         double xRandom, yRandom, random;
         double nDotDirection = alignZero(n.dotProduct(this.get_dir()));
-        double r = Math.abs(Math.tan(Math.acos(w.dotProduct(v))));
+        double radius = Math.abs(Math.tan(Math.acos(w.dotProduct(v))));// the tan angle between the two orthogonal vectors
         for (int i = 1; i < num; i++)//starts from 1 because there has to be at least one ray(the original)and we already dealt with it
         {
             xRandom = randomNumber(-1, 1);//random number [-1,1)
             yRandom = Math.sqrt(1 - Math.pow(xRandom, 2));
-            random = randomNumber(-r, r);//random number[-r,r)
+            random = randomNumber(-radius, radius);//random number[-radius,radius)
             if (xRandom != 0)//vector cannot be scaled with zero
                 randomP = center.add(w.scale(random));
             if (yRandom != 0)//vector cannot be scaled with zero
